@@ -1,6 +1,26 @@
+// 文章类型 technology 文章列表 ，title 文章列表标题
+var G_articleType = [
+    {
+        list: [],
+        title: '技术'
+    },
+    {
+        list: [],
+        title: '软件'
+    },
+    {
+        list: [],
+        title: '笔记'
+    }
+];
 
 // 所有的文章, txtType 文章类型， value 文章标题
 var G_data = [
+    {
+        articleType: '笔记',
+        value: ' 开源压力测试工具（siege）',
+        id: 39,
+    },
     {
         articleType: '技术',
         value: '递归检索对象中是否包含某个值',
@@ -194,21 +214,7 @@ var G_data = [
 
 ]
 
-// 文章类型 technology 文章列表 ，title 文章列表标题
-var G_articleType = [
-    {
-        list: [],
-        title: '技术'
-    },
-    {
-        list: [],
-        title: '软件'
-    },
-    {
-        list: [],
-        title: '笔记'
-    }
-];
+
 
 // 文章归类处理
 for (let i in G_articleType) {
