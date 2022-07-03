@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>天穹少年</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+<h1>vscode修改前端代码常用正则表达式</h1>
+<h5>vscode用正则表达式修改代码（vscode修改代码快捷键：shift+alt+f）</h5>
+<p>1、删除所有的打印  
+</p>
+<p>查找值：</p>
+<pre><code>console\.log\(.*(\)|;)$
+</code></pre>
+
+<p>替换值为空</p>
+<p>2、全局修改 <strong>v-mode</strong> 为 <strong>v-model.trim</strong></p>
+<p>查找值：</p>
+<pre><code>v-model(\s+)?=
+</code></pre>
+
+<p>替换值：</p>
+<pre><code>v-model.trim=
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

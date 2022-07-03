@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>天穹少年</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+<h1>js通过出生年月计算年龄方法</h1>
+<pre><code>function getAge(birthDate) {
+
+    var birArr = birthDate.split(/-|\//);
+    var birYear = birArr[0];
+    var birMonth = birArr[1];
+    var birDay = birArr[2];
+    d = new Date();
+    var nowYear = d.getFullYear();
+    var nowMonth = d.getMonth() + 1; //记得加1
+    var nowDay = d.getDate();
+    var returnAge;
+    if (birArr == null) {
+        return false;
+    };
+    var d = new Date(birYear, birMonth - 1, birDay);
+    if (d.getFullYear() == birYear &amp;&amp; (d.getMonth() + 1) == birMonth &amp;&amp; d.getDate() == birDay) {
+        if (nowYear == birYear) {
+            returnAge = 0; //同年 则为0岁
+        } else {
+            var ageDiff = nowYear - birYear; //年之差
+            if (ageDiff &gt; 0) {
+                if (nowMonth == birMonth) {
+                    var dayDiff = nowDay - birDay; //日之差
+                    if (dayDiff &lt; 0) {
+                        returnAge = ageDiff - 1;
+                    } else {
+                        returnAge = ageDiff;
+                    }
+                } else {
+                    var monthDiff = nowMonth - birMonth; //月之差
+                    if (monthDiff &lt; 0) {
+                        returnAge = ageDiff - 1;
+                    } else {
+                        returnAge = ageDiff;
+                    }
+                }
+            } else {
+                return &quot;出生日期晚于今天，数据有误&quot;; //返回-1 表示出生日期输入错误 晚于今天
+            }
+        }
+        return returnAge;
+    } else {
+        return (&quot;输入的日期格式错误！&quot;);
+    }
+}
+
+if(isNaN(getAge('1999-66-12'))){
+    console.log('Invalid Date');
+}
+
+console.log(getAge('1998-02-12'));
+console.log(getAge('1999-02-12'));
+console.log(getAge('1998-15-12'));
+console.log(getAge('199999-15-12'));
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

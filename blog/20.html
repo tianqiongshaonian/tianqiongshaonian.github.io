@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>天穹少年</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+<h1>js 获取当前月份的开始日期和结束日期</h1>
+<pre><code>//  获取月份开始日期和结束日期
+
+function getMonthStartEndDate(year, month) {
+    let d = new Date(year, month, 0);
+    let days = d.getDate();
+    return {
+        startDate: year + &quot;-&quot; + month + &quot;-01&quot;,
+        endDate: year + &quot;-&quot; + month + &quot;-&quot; + days,
+    };
+}
+
+console.log(getMonthStartEndDate(2022, 1));
+
+console.log(getMonthStartEndDate('2022', '08'));
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

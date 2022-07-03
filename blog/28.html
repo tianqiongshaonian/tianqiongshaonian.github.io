@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>天穹少年</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+<h1>js证件信息脱敏处理方法</h1>
+<pre><code> /**
+ * 关键信息隐藏
+ * @param str 字符串
+ * @param frontLen 字符串前面保留位数
+ * @param endLen 字符串后面保留位数
+ * @returns {string}
+ */
+
+export function hideCode(str, frontLen, endLen) {
+  if (typeof str !== 'string') {
+    str = JSON.stringify(str);
+  }
+  let len = str.length - frontLen - endLen;
+  let xing = '';
+  for (let i = 0; i &lt; len; i++) {
+    xing += '*';
+  }
+  return str.substring(0, frontLen) + xing + str.substring(str.length - endLen);
+};
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

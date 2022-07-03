@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>天穹少年</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script src="./js/data.js"></script>
+
+  <!-- 本地样式优化 start -->
+  <!-- <link rel="stylesheet" href="./css/element-ui@2.15.9.css">
+  <script src="./js/vue2.js"></script>
+  <script src="./js/element-ui@2.15.9.js"></script> -->
+  <!-- 本地样式优化 end -->
+
+  <!-- cdn 样式 start -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <!-- cdn 样式 end -->
+
+  <link rel="stylesheet" href="./css/main.css">
+
+</head>
+
+<script>
+
+  window.onload = function () {
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        articleType: [], // 文章类型
+        queryV: '',
+        restaurants: [],
+        detail: '',
+      },
+      mounted() {
+        this.articleType = G_articleType;
+        this.restaurants = G_data;
+      },
+      methods: {
+        handleSelect() {
+          var item = this.restaurants.find(v => {
+            return v.value == this.queryV;
+          })
+          if (item) {
+            this.detail = item.href;
+          } else {
+            this.detail = '';
+            if (this.queryV) {
+              this.$message.error('搜索不到更多内容！');
+            }
+          }
+
+        },
+        querySearch(queryString, cb) {
+          if (!queryString) { return }
+          var restaurants = this.strSearch(this.restaurants, queryString);
+          if (!restaurants || !restaurants.length) {
+            this.$message.error('搜索不到更多内容！');
+            return;
+          }
+          cb(restaurants);
+        },
+        strSearch(tempArr, searchVal) {
+          var newTempArr = [];
+          var tempArrLength = tempArr.length;
+          // 取出包含 searchVal 的值，放入数组中
+          for (var k = 0; k < tempArrLength; k++) {
+            if (tempArr[k].value.toLowerCase().indexOf(searchVal.toLowerCase()) != -1) {
+              newTempArr.push(tempArr[k]);
+            } else {
+              continue;
+            }
+          }
+          tempArrLength = newTempArr.length;
+          // 通过字符串长度排序，最短的在最前面，这里采用了插入排序算法
+          for (var i = 0; i < tempArrLength; i++) {
+            var minIndex = i;
+            for (var j = i; j < tempArrLength; j++) {
+              if (newTempArr[j].value.length < newTempArr[minIndex].value.length) { //找到最小的数
+                minIndex = j; //将最小数的索引保存
+              } else { continue; }
+            }
+            var temp = newTempArr[minIndex];
+            newTempArr[minIndex] = newTempArr[i];
+            newTempArr[i] = temp;
+          }
+          return newTempArr;
+        }
+      }
+    })
+  }
+</script>
+
+<body>
+  <div id="app">
+
+    <div class="main">
+      <a href="./index.html" target="_self" rel="noopener noreferrer">
+        <h1>天穹少年</h1>
+      </a>
+    </div>
+
+    <div class="main">
+      <div class="query-search">
+        <el-autocomplete class="inline-input" v-model="queryV" :fetch-suggestions="querySearch" placeholder="请输入文章标题搜索"
+          :trigger-on-focus="false" @select="handleSelect" clearable :popper-append-to-body="false"></el-autocomplete>
+        <el-button slot="append" type="primary" class="btn" @click="handleSelect" :disabled="!queryV">搜索</el-button>
+      </div>
+    </div>
+
+    <div style="height: 3rem;"></div>
+    <div class="popular-articles-box" v-if="!detail">
+
+      <div class="popular-articles" v-for="(item,index) in articleType" :key="index">
+        <h3>{{item.title}}</h3>
+        <p v-for="(childItem,childIndex) in item.list" :key="childIndex"><a
+            :href="childItem.href">{{childItem.value}}</a></p>
+      </div>
+
+    </div>
+    <div class="myFrameName" v-if="detail">
+      <iframe id="myFrameId" name="myFrameName" :src="detail" scrolling="yes" frameborder="0"
+        style="width:100%;height: 680px;"></iframe>
+    </div>
+
+  </div>
+
+</body>
+
+
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

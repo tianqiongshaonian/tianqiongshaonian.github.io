@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>天穹少年</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+<h1>el-calendar组件静止用户点击灰色日历</h1>
+<pre><code> // 静止用户点击上一个月灰色部分日期
+ /deep/ .el-calendar-table:not(.is-range) td.prev {
+   pointer-events: none;
+ }
+
+ // 静止用户点击下一个月灰色部分日期
+ /deep/ .el-calendar-table:not(.is-range) td.next {
+   pointer-events: none;
+ }
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
