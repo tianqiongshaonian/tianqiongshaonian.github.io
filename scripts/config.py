@@ -36,7 +36,7 @@ class Config:
         "💻 <b>配置规格</b>：{cpu}核 CPU / {memory} 内存 / {ssd} SSD\n"
         "🌐 <b>流量带宽</b>：{band} / {bandwidth}\n"
         "🏢 <b>机房节点</b>：{datacenter}\n"
-        "💵 <b>官方原价</b>：<b>${price}</b>\n"
+        "💵 <b>官方价格</b>：<b>${price} / {billing_cycle}</b>\n"
         "🎟 <b>优惠码</b>：<code>{promo_code}</code> ({discount_text})\n\n"
         "👉 <a href=\"{buy_url}\"><b>【点击立即直达抢购】</b></a>\n"
         "🌐 <a href=\"{site_url}\"><b>【查看更多方案库存监控】</b></a>"

@@ -449,6 +449,7 @@
         const buyUrl = `https://bwh81.net/aff.php?aff=${affId}&pid=${item.pid}&promocode=${promoCode}`;
         const rawPrice = parseFloat(item.price) || 0;
         const discPrice = (rawPrice * (1 - discRate)).toFixed(2);
+        const billingCycle = item.billing_cycle || '年付';
 
         const recommendBadge = item.recommended === 1 
           ? '<span class="inline-flex items-center shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60 ml-2"><i class="fa-solid fa-fire text-amber-500 mr-1 text-[10px]"></i>热门推荐</span>' 
@@ -484,7 +485,7 @@
             </td>
             <td class="py-3 px-2 sm:px-3 text-right whitespace-nowrap font-mono">
               <span class="text-base font-bold text-blue-600">$${discPrice}</span>
-              <span class="text-[10px] text-slate-400 block -mt-1">/年或期</span>
+              <span class="text-[10px] text-slate-400 block -mt-1">/${escapeHtml(billingCycle)}</span>
             </td>
             <td class="py-3 px-2 sm:px-3 text-center whitespace-nowrap">
               ${
@@ -524,6 +525,7 @@
         const buyUrl = `https://bwh81.net/aff.php?aff=${affId}&pid=${item.pid}&promocode=${promoCode}`;
         const rawPrice = parseFloat(item.price) || 0;
         const discPrice = (rawPrice * (1 - discRate)).toFixed(2);
+        const billingCycle = item.billing_cycle || '年付';
 
         const recommendBadge = item.recommended === 1 
           ? '<span class="inline-flex items-center shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60"><i class="fa-solid fa-fire text-amber-500 mr-1"></i>推荐</span>' 
@@ -535,20 +537,20 @@
               <div class="flex items-start justify-between gap-2">
                 <div class="space-y-1 flex-1 min-w-0">
                   <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
-                    <span class="font-bold text-slate-900 text-sm sm:text-base leading-tight">${escapeHtml(item.name)}</span>
+                    <span class="font-bold text-slate-900 text-sm sm:text-base leading-tight break-words">${escapeHtml(item.name)}</span>
                     ${recommendBadge}
                   </div>
-                  <div class="flex items-center space-x-2 text-xs text-slate-400">
-                    <span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded font-mono text-[10px]">PID: ${item.pid}</span>
-                    <span class="truncate font-medium text-slate-500">${escapeHtml(item.circuit_type)}</span>
+                  <div class="flex items-center space-x-2 text-xs text-slate-400 mt-1">
+                    <span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded font-mono text-[10px] shrink-0">PID: ${item.pid}</span>
+                    <span class="font-medium text-slate-500 break-words text-[11px]">${escapeHtml(item.circuit_type)}</span>
                   </div>
                 </div>
 
                 <div class="shrink-0">
                   ${
                     isInStock
-                      ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-dot mr-1"></span>有货</span>'
-                      : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-rose-50 text-rose-600 border border-rose-200">缺货</span>'
+                      ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-dot mr-1"></span>有货</span>'
+                      : '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-rose-50 text-rose-600 border border-rose-200">缺货</span>'
                   }
                 </div>
               </div>
@@ -557,43 +559,46 @@
             <div class="grid grid-cols-2 gap-2 bg-slate-50/80 rounded-xl p-2.5 text-xs">
               <div class="space-y-0.5">
                 <span class="text-[10px] text-slate-400 uppercase font-semibold">计算 / 内存</span>
-                <p class="font-semibold text-slate-800">${item.cpu} 核 / ${item.memory}</p>
+                <p class="font-semibold text-slate-800 break-words">${item.cpu} 核 / ${item.memory}</p>
               </div>
               <div class="space-y-0.5">
                 <span class="text-[10px] text-slate-400 uppercase font-semibold">高速 SSD</span>
-                <p class="font-semibold text-slate-800 font-mono">${item.ssd}</p>
+                <p class="font-semibold text-slate-800 font-mono break-words">${item.ssd}</p>
               </div>
               <div class="space-y-0.5">
                 <span class="text-[10px] text-slate-400 uppercase font-semibold">月流量</span>
-                <p class="font-semibold text-slate-800 font-mono">${item.band}</p>
+                <p class="font-semibold text-slate-800 font-mono break-words">${item.band}</p>
               </div>
               <div class="space-y-0.5">
                 <span class="text-[10px] text-slate-400 uppercase font-semibold">网络带宽</span>
-                <p class="font-semibold text-slate-800 font-mono">${item.bandwidth}</p>
+                <p class="font-semibold text-slate-800 font-mono break-words">${item.bandwidth}</p>
               </div>
             </div>
 
-            <div class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed bg-slate-50/40 p-2 rounded-lg border border-slate-100">
-              <i class="fa-solid fa-location-dot text-slate-400 mr-1"></i>${escapeHtml(item.datacenter || '常规全球机房')}
+            <div class="text-[11px] text-slate-600 leading-relaxed bg-slate-50/70 p-2.5 rounded-xl border border-slate-200/60 break-words">
+              <div class="flex items-start space-x-1.5">
+                <i class="fa-solid fa-location-dot text-blue-500 mt-0.5 shrink-0 text-[11px]"></i>
+                <span class="leading-normal">${escapeHtml(item.datacenter || '常规全球机房')}</span>
+              </div>
             </div>
 
-            <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-              <div>
-                <div class="text-[10px] text-slate-400 line-through">$${item.price}</div>
-                <div class="flex items-baseline space-x-1">
-                  <span class="text-lg font-black text-blue-600 font-mono">$${discPrice}</span>
-                  <span class="text-[10px] text-slate-400 font-medium">/期</span>
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+              <div class="min-w-0">
+                <div class="text-[10px] text-slate-400 line-through font-mono">$${item.price}</div>
+                <div class="flex items-baseline space-x-0.5">
+                  <span class="text-xl font-extrabold text-blue-600 font-mono">$${discPrice}</span>
+                  <span class="text-xs text-slate-500 font-medium whitespace-nowrap">/${escapeHtml(billingCycle)}</span>
                 </div>
               </div>
 
-              <div>
+              <div class="shrink-0">
                 ${
                   isInStock
-                    ? `<a href="${buyUrl}" target="_blank" onclick="onBuyClick(event)" class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm shadow-blue-500/20 transition active:scale-95 space-x-1.5">
+                    ? `<a href="${buyUrl}" target="_blank" onclick="onBuyClick(event)" class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition active:scale-95 space-x-1.5 whitespace-nowrap">
                         <span>立即抢购</span>
                         <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                       </a>`
-                    : `<a href="${tgChannel}" target="_blank" class="inline-flex items-center justify-center px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium transition space-x-1.5">
+                    : `<a href="${tgChannel}" target="_blank" class="inline-flex items-center justify-center px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium transition space-x-1.5 whitespace-nowrap">
                         <i class="fa-brands fa-telegram text-sky-500"></i>
                         <span>补货通知</span>
                       </a>`

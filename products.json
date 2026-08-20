@@ -19,7 +19,8 @@
         "recommend",
         "kvm"
       ],
-      "recommended": 1
+      "recommended": 1,
+      "billing_cycle": "年付"
     },
     {
       "pid": "45",
@@ -37,7 +38,8 @@
         "recommend",
         "kvm"
       ],
-      "recommended": 1
+      "recommended": 1,
+      "billing_cycle": "年付"
     },
     {
       "pid": "46",
@@ -54,7 +56,8 @@
       "tags": [
         "kvm"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "47",
@@ -71,7 +74,8 @@
       "tags": [
         "kvm"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "48",
@@ -88,7 +92,8 @@
       "tags": [
         "kvm"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "49",
@@ -105,7 +110,8 @@
       "tags": [
         "kvm"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "87",
@@ -123,7 +129,8 @@
         "recommend",
         "cn2gia"
       ],
-      "recommended": 1
+      "recommended": 1,
+      "billing_cycle": "年付"
     },
     {
       "pid": "88",
@@ -141,7 +148,8 @@
         "recommend",
         "cn2gia"
       ],
-      "recommended": 1
+      "recommended": 1,
+      "billing_cycle": "年付"
     },
     {
       "pid": "89",
@@ -158,7 +166,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "90",
@@ -175,7 +184,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "91",
@@ -192,7 +202,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "92",
@@ -209,7 +220,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "93",
@@ -226,7 +238,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "160",
@@ -243,7 +256,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "161",
@@ -260,7 +274,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "164",
@@ -278,7 +293,8 @@
         "recommend",
         "cn2gia"
       ],
-      "recommended": 1
+      "recommended": 1,
+      "billing_cycle": "年付"
     },
     {
       "pid": "165",
@@ -296,7 +312,8 @@
         "recommend",
         "cn2gia"
       ],
-      "recommended": 1
+      "recommended": 1,
+      "billing_cycle": "年付"
     },
     {
       "pid": "166",
@@ -313,7 +330,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "167",
@@ -330,7 +348,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "168",
@@ -347,7 +366,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "169",
@@ -364,7 +384,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "170",
@@ -381,7 +402,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "171",
@@ -398,7 +420,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "172",
@@ -415,7 +438,8 @@
       "tags": [
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "173",
@@ -433,7 +457,8 @@
         "recommend",
         "singapore"
       ],
-      "recommended": 1
+      "recommended": 1,
+      "billing_cycle": "年付"
     },
     {
       "pid": "174",
@@ -451,7 +476,8 @@
         "recommend",
         "singapore"
       ],
-      "recommended": 1
+      "recommended": 1,
+      "billing_cycle": "年付"
     },
     {
       "pid": "175",
@@ -468,7 +494,8 @@
       "tags": [
         "singapore"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "176",
@@ -485,7 +512,8 @@
       "tags": [
         "singapore"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "177",
@@ -502,7 +530,8 @@
       "tags": [
         "singapore"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "178",
@@ -519,7 +548,8 @@
       "tags": [
         "singapore"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "95",
@@ -537,7 +567,8 @@
         "recommend",
         "hk"
       ],
-      "recommended": 1
+      "recommended": 1,
+      "billing_cycle": "年付"
     },
     {
       "pid": "96",
@@ -555,7 +586,8 @@
         "recommend",
         "hk"
       ],
-      "recommended": 1
+      "recommended": 1,
+      "billing_cycle": "年付"
     },
     {
       "pid": "97",
@@ -572,7 +604,8 @@
       "tags": [
         "hk"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "98",
@@ -589,7 +622,8 @@
       "tags": [
         "hk"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "122",
@@ -606,7 +640,8 @@
       "tags": [
         "hk"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "124",
@@ -623,7 +658,8 @@
       "tags": [
         "hk"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "134",
@@ -641,7 +677,8 @@
         "recommend",
         "japan"
       ],
-      "recommended": 1
+      "recommended": 1,
+      "billing_cycle": "年付"
     },
     {
       "pid": "135",
@@ -659,7 +696,8 @@
         "recommend",
         "japan"
       ],
-      "recommended": 1
+      "recommended": 1,
+      "billing_cycle": "年付"
     },
     {
       "pid": "136",
@@ -676,7 +714,8 @@
       "tags": [
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "137",
@@ -693,7 +732,8 @@
       "tags": [
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "138",
@@ -710,7 +750,8 @@
       "tags": [
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "139",
@@ -727,7 +768,8 @@
       "tags": [
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "108",
@@ -744,7 +786,8 @@
       "tags": [
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "109",
@@ -761,7 +804,8 @@
       "tags": [
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "110",
@@ -778,7 +822,8 @@
       "tags": [
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "111",
@@ -795,7 +840,8 @@
       "tags": [
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "123",
@@ -812,7 +858,8 @@
       "tags": [
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "125",
@@ -829,7 +876,8 @@
       "tags": [
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "114",
@@ -844,7 +892,8 @@
       "price": "169.99",
       "status": 1,
       "tags": [],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "115",
@@ -859,7 +908,8 @@
       "price": "299.99",
       "status": 1,
       "tags": [],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "116",
@@ -874,7 +924,8 @@
       "price": "549.99",
       "status": 1,
       "tags": [],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "117",
@@ -889,7 +940,8 @@
       "price": "879.99",
       "status": 1,
       "tags": [],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "118",
@@ -904,7 +956,8 @@
       "price": "1599.99",
       "status": 1,
       "tags": [],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "119",
@@ -919,7 +972,8 @@
       "price": "2759.99",
       "status": 1,
       "tags": [],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "120",
@@ -934,7 +988,8 @@
       "price": "5399.99",
       "status": 1,
       "tags": [],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "162",
@@ -952,7 +1007,8 @@
         "limited",
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "163",
@@ -970,7 +1026,8 @@
         "limited",
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "159",
@@ -987,7 +1044,8 @@
       "tags": [
         "limited"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "158",
@@ -1004,7 +1062,8 @@
       "tags": [
         "limited"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "157",
@@ -1021,7 +1080,8 @@
       "tags": [
         "limited"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "156",
@@ -1038,7 +1098,8 @@
       "tags": [
         "limited"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "154",
@@ -1055,7 +1116,8 @@
       "tags": [
         "limited"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "149",
@@ -1073,7 +1135,8 @@
         "limited",
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "147",
@@ -1090,7 +1153,8 @@
       "tags": [
         "limited"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "131",
@@ -1107,7 +1171,8 @@
       "tags": [
         "limited"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "145",
@@ -1125,7 +1190,8 @@
         "limited",
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "112",
@@ -1143,7 +1209,8 @@
         "limited",
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "143",
@@ -1161,7 +1228,8 @@
         "limited",
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "94",
@@ -1179,7 +1247,8 @@
         "limited",
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "105",
@@ -1197,7 +1266,8 @@
         "limited",
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "132",
@@ -1215,7 +1285,8 @@
         "limited",
         "cn2gia"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "130",
@@ -1232,7 +1303,8 @@
       "tags": [
         "limited"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "133",
@@ -1249,7 +1321,8 @@
       "tags": [
         "limited"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "121",
@@ -1267,7 +1340,8 @@
         "limited",
         "hk"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "104",
@@ -1285,7 +1359,8 @@
         "limited",
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "146",
@@ -1303,7 +1378,8 @@
         "limited",
         "japan"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "126",
@@ -1320,7 +1396,8 @@
       "tags": [
         "limited"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     },
     {
       "pid": "113",
@@ -1337,7 +1414,8 @@
       "tags": [
         "limited"
       ],
-      "recommended": 0
+      "recommended": 0,
+      "billing_cycle": "年付"
     }
   ]
 }
