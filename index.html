@@ -269,11 +269,17 @@
 
     // 初始化：同时加载 config.json 和 products.json
     async function init() {
+      await loadData();
+      // 每隔 60 秒在后台静默拉取一次最新数据，无需用户手动刷新
+      setInterval(loadData, 60000);
+    }
+
+    async function loadData() {
       const timestamp = new Date().getTime();
       
-      // 1. 优先加载公共配置文件 config.json
+      // 1. 加载公共配置文件 config.json (防缓存)
       try {
-        const confRes = await fetch(`config.json?t=${timestamp}`);
+        const confRes = await fetch(`config.json?t=${timestamp}`, { cache: 'no-cache' });
         if (confRes.ok) {
           const loadedConf = await confRes.json();
           appConfig = Object.assign(appConfig, loadedConf);
@@ -283,9 +289,9 @@
         console.warn('使用内置默认 config 配置:', e);
       }
 
-      // 2. 加载库存数据 products.json
+      // 2. 加载最新库存数据 products.json (防缓存)
       try {
-        const prodRes = await fetch(`products.json?t=${timestamp}`);
+        const prodRes = await fetch(`products.json?t=${timestamp}`, { cache: 'no-cache' });
         if (!prodRes.ok) throw new Error('网络请求异常');
         const prodData = await prodRes.json();
         
@@ -300,14 +306,6 @@
         renderAll();
       } catch (err) {
         console.error('加载 products.json 失败:', err);
-        document.getElementById('productTableBody').innerHTML = `
-          <tr>
-            <td colspan="8" class="py-12 text-center text-rose-500">
-              <i class="fa-solid fa-triangle-exclamation text-2xl mb-2"></i>
-              <p>加载数据失败，请确认 products.json 文件是否存在！</p>
-            </td>
-          </tr>
-        `;
       }
     }
 
