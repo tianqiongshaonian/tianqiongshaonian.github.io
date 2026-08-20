@@ -1,0 +1,69 @@
+name: 搬瓦工库存监控与自动部署
+
+on:
+  # 定时任务：每 10 分钟自动执行一次库存检测
+  schedule:
+    - cron: '*/10 * * * *'
+  # 支持在 GitHub 网页上手动点击按钮触发
+  workflow_dispatch:
+  # 当向 main 分支推送代码时触发
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+
+# 授予写入权限以允许更新 products.json 并部署 Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "stock-monitor"
+  cancel-in-progress: false
+
+jobs:
+  check-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: 设置 Python 运行环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 执行库存探测与变动比对
+        env:
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: |
+          python scripts/checker.py
+
+      - name: 提交更新后的库存数据
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          if [ -n "$(git status --porcelain products.json)" ]; then
+            git add products.json
+            git commit -m "chore(data): 自动更新库存状态 [skip ci]"
+            git push origin main
+          else
+            echo "库存数据无变动，跳过 Commit。"
+          fi
+
+      - name: 配置 GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: 打包静态网页资源
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

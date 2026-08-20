@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title id="pageTitle">搬瓦工库存监控 - BandwagonHost VPS 实时库存与全网补货通知</title>
+  <meta name="description" content="全网最全搬瓦工(BandwagonHost)库存实时监控系统，覆盖香港CN2 GIA、日本软银/GIA、美国CN2 GIA-E、The Plan限量版等全系套餐，支持多维度详细检索与即时补货提醒。">
+  <meta name="keywords" content="搬瓦工库存,搬瓦工补货,BandwagonHost,CN2 GIA,搬瓦工优惠码,搬瓦工限量版,The Plan,香港CN2 GIA">
+  <!-- 本地化编译后的独立 Tailwind CSS (消除 CDN 警告，提升秒开速度) -->
+  <link rel="stylesheet" href="static/css/tailwind.min.css">
+  <!-- 本地化 Font Awesome 6 图标与字体资源 -->
+  <link rel="stylesheet" href="static/fontawesome/css/all.min.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col font-sans selection:bg-blue-500 selection:text-white">
+
+  <!-- 顶部导航栏 (宽屏 1600px 自适应) -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs backdrop-blur-md bg-white/95">
+    <div class="max-w-[1600px] mx-auto px-3 sm:px-5 lg:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 shrink-0">
+          <i class="fa-solid fa-server text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 id="brandName" class="text-base sm:text-lg font-bold text-slate-900 leading-tight">搬瓦工库存监控</h1>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-dot mr-1"></span>实时
+            </span>
+          </div>
+          <p id="brandSubtitle" class="text-xs text-slate-400 hidden sm:block">BandwagonHost Real-time Stock & Restock Monitor</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        <a id="tgChannelBtn" href="#" target="_blank" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 text-xs sm:text-sm font-medium transition duration-150 border border-sky-200/60">
+          <i class="fa-brands fa-telegram text-sky-500 text-sm"></i>
+          <span class="hidden xs:inline sm:inline">TG 频道</span>
+        </a>
+        <button onclick="copyPromoCode()" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs sm:text-sm font-medium shadow-sm transition duration-150 active:scale-95">
+          <i class="fa-solid fa-tags"></i>
+          <span>优惠码</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体内容 (宽屏 1600px) -->
+  <main class="max-w-[1600px] mx-auto px-3 sm:px-5 lg:px-6 py-4 sm:py-5 flex-1 w-full space-y-4">
+
+    <!-- 顶部状态与优惠码卡片 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+      
+      <!-- 统计卡片 1: 实时库存 -->
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+        <div class="space-y-0.5 sm:space-y-1">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">实时库存情况</span>
+          <div class="flex items-baseline space-x-2">
+            <span id="statInStock" class="text-2xl sm:text-3xl font-black text-emerald-600">--</span>
+            <span class="text-xs sm:text-sm text-slate-400 font-medium">/ <span id="statTotal">--</span> 款有货</span>
+          </div>
+        </div>
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg sm:text-xl shrink-0">
+          <i class="fa-solid fa-box-open"></i>
+        </div>
+      </div>
+
+      <!-- 统计卡片 2: 最后更新 -->
+      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+        <div class="space-y-0.5 sm:space-y-1">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">最新探测时间 (北京时间)</span>
+          <div class="flex items-center space-x-2 text-slate-800 font-medium text-xs sm:text-sm">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot inline-block shrink-0"></span>
+            <span id="statUpdatedTime" class="font-semibold text-slate-700 truncate">正在探测...</span>
+          </div>
+        </div>
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg sm:text-xl shrink-0">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </div>
+      </div>
+
+      <!-- 统计卡片 3: 优惠码一键复制 -->
+      <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 sm:p-5 rounded-2xl text-white shadow-sm flex items-center justify-between sm:col-span-2 lg:col-span-1">
+        <div class="space-y-1">
+          <div class="flex items-center space-x-2">
+            <span class="text-xs font-semibold text-blue-100 uppercase tracking-wider">最新循环优惠码</span>
+            <span id="discountTag" class="px-2 py-0.5 rounded-full bg-white/20 text-[11px] font-medium text-white">6.78% 循环优惠</span>
+          </div>
+          <div class="flex items-center space-x-2 pt-0.5">
+            <code id="promoCodeText" class="text-lg sm:text-xl font-mono font-bold tracking-wider text-amber-200">BWHCXZAVFBVY</code>
+            <button onclick="copyPromoCode()" id="copyBtn" class="px-2.5 py-1 rounded-md bg-white text-blue-700 hover:bg-blue-50 text-xs font-semibold transition active:scale-95 flex items-center space-x-1 shadow-xs shrink-0">
+              <i class="fa-regular fa-copy"></i>
+              <span id="copyBtnLabel">复制</span>
+            </button>
+          </div>
+        </div>
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white/15 text-white flex items-center justify-center text-lg sm:text-xl shrink-0">
+          <i class="fa-solid fa-ticket"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 筛选、搜索与视图切换控制栏 -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-4 shadow-xs space-y-3">
+      
+      <!-- 分类 Tab 栏 (移动端支持横向平滑滑动) -->
+      <div class="flex items-center space-x-1.5 overflow-x-auto custom-scrollbar pb-1 text-xs sm:text-sm font-medium" id="categoryTabs">
+        <button data-tag="all" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-blue-600 text-white whitespace-nowrap transition">全部方案</button>
+        <button data-tag="instock" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block shrink-0"></span>
+          <span>仅看有货</span>
+        </button>
+        <button data-tag="recommend" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">⭐️ 热门推荐</button>
+        <button data-tag="limited" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">⚡️ 限量版</button>
+        <button data-tag="hk" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">🇭🇰 香港</button>
+        <button data-tag="japan" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">🇯🇵 日本</button>
+        <button data-tag="cn2gia" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">🇺🇸 CN2 GIA-E</button>
+        <button data-tag="singapore" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">🇸🇬 新加坡</button>
+        <button data-tag="kvm" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">常规 KVM</button>
+      </div>
+
+      <!-- 详细搜索与排序筛选栏 -->
+      <div class="pt-2 border-t border-slate-100 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5">
+        
+        <!-- 超级详细搜索框 (支持多关键词空格分词) -->
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs sm:text-sm"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="搜索支持空格分词: 如 '香港 1T' / 'DC6 2G' / 'PID 44' / '2核 40G' / '有货'..." 
+            class="w-full pl-9 pr-8 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+          />
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 w-5 h-5 flex items-center justify-center rounded-full text-xs">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- 排序 & 视图切换器 -->
+        <div class="flex items-center space-x-2 self-end md:self-auto w-full md:w-auto justify-between md:justify-end">
+          
+          <!-- 匹配数量统计 -->
+          <div class="text-xs text-slate-400 font-medium px-1">
+            匹配: <span id="matchCount" class="text-blue-600 font-bold">0</span> 款
+          </div>
+
+          <!-- 排序下拉 -->
+          <div class="relative">
+            <select id="sortSelect" onchange="changeSort(this.value)" class="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl pl-3 pr-7 py-2 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer">
+              <option value="default">默认排序</option>
+              <option value="price-asc">价格：从低到高 ⬆️</option>
+              <option value="price-desc">价格：从高到低 ⬇️</option>
+              <option value="mem-asc">内存：从小到大</option>
+              <option value="mem-desc">内存：从大到小</option>
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 pointer-events-none"></i>
+          </div>
+
+          <!-- 视图切换 (桌面端/移动端可选卡片或表格) -->
+          <div class="bg-slate-100 p-0.5 rounded-xl flex items-center">
+            <button id="viewCardBtn" onclick="switchView('card')" title="卡片视图" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">
+              <i class="fa-solid fa-grip"></i>
+            </button>
+            <button id="viewTableBtn" onclick="switchView('table')" title="表格视图" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">
+              <i class="fa-solid fa-table-list"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== 1. 移动端/平板/宽屏 现代卡片流视图 (比例适中协调) ==================== -->
+    <div id="cardViewContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+      <!-- 动态卡片内容 -->
+    </div>
+
+    <!-- ==================== 2. PC / 宽屏 经典数据表格视图 ==================== -->
+    <div id="tableViewContainer" class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-left text-xs sm:text-sm text-slate-600">
+          <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200/80 text-[11px] sm:text-xs uppercase tracking-wider">
+            <tr>
+              <th scope="col" class="py-3 px-3 sm:px-4 min-w-[200px]">套餐方案 / 线路</th>
+              <th scope="col" class="py-3 px-2 sm:px-3 whitespace-nowrap">CPU / 内存 / SSD</th>
+              <th scope="col" class="py-3 px-2 sm:px-3 whitespace-nowrap">流量 / 带宽</th>
+              <th scope="col" class="py-3 px-2 sm:px-3">可选机房</th>
+              <th scope="col" class="py-3 px-2 sm:px-3 text-right whitespace-nowrap">原价</th>
+              <th scope="col" class="py-3 px-2 sm:px-3 text-right whitespace-nowrap">折后价</th>
+              <th scope="col" class="py-3 px-2 sm:px-3 text-center whitespace-nowrap">库存状态</th>
+              <th scope="col" class="py-3 px-3 sm:px-4 text-center whitespace-nowrap">直达抢购</th>
+            </tr>
+          </thead>
+          <tbody id="productTableBody" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="8" class="py-16 text-center text-slate-400">
+                <i class="fa-solid fa-circle-notch fa-spin text-2xl text-blue-500 mb-2"></i>
+                <p class="text-sm">正在加载实时库存数据...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 无搜索结果友好提示 -->
+    <div id="noResults" class="hidden bg-white rounded-2xl border border-slate-200/80 p-12 text-center">
+      <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto text-2xl mb-3">
+        <i class="fa-solid fa-inbox"></i>
+      </div>
+      <h3 class="text-base font-semibold text-slate-800">未找到匹配的 VPS 方案</h3>
+      <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">请尝试调整搜索关键词（如减少筛选条件、搜索套餐名称或机房别名）</p>
+      <button onclick="clearSearch()" class="mt-4 px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-semibold rounded-xl transition">
+        清空搜索条件
+      </button>
+    </div>
+
+  </main>
+
+  <!-- 底部 Footer (由 config.json 动态驱动) -->
+  <footer class="bg-white border-t border-slate-200 mt-12 py-8 text-center text-xs text-slate-400 space-y-2">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6">
+      <p id="footerBrand" class="font-medium text-slate-500">搬瓦工全方案库存实时监控系统</p>
+      <p id="intervalDesc">由 GitHub Pages & GitHub Actions 全自动定时探测并构建 | 购买链接自动集成官方推广代码</p>
+      <p id="footerDisclaimer" class="text-slate-300">免责声明：本站为第三方搬瓦工(BandwagonHost)库存监控工具，非官网运营。实际价格与配置请以结账页面为准。</p>
+    </div>
+  </footer>
+
+  <!-- Toast 消息提示 -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-slate-900/90 backdrop-blur-md text-white text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-xl transform translate-y-16 opacity-0 transition-all duration-300 pointer-events-none flex items-center space-x-2 z-50">
+    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="toastMessage">已成功复制</span>
+  </div>
+
+  <script>
+    let appConfig = {
+      site: {
+        title: "搬瓦工库存监控 - BandwagonHost VPS 实时库存与全网补货通知",
+        brand_name: "搬瓦工库存监控",
+        subtitle: "BandwagonHost Real-time Stock & Restock Monitor"
+      },
+      affiliate: {
+        aff_id: "68648",
+        promo_code: "BWHCXZAVFBVY",
+        discount_text: "6.78% 循环优惠",
+        discount_rate: 0.0678
+      },
+      social: {
+        tg_channel: "https://t.me/bwg191"
+      },
+      monitor: {
+        interval_text: "数据每 10 分钟自动探测更新"
+      },
+      footer: {
+        disclaimer: "免责声明：本站为第三方搬瓦工(BandwagonHost)库存监控工具，非官网运营。实际价格与配置请以结账页面为准。"
+      }
+    };
+
+    let appData = {
+      products: []
+    };
+
+    let currentTag = 'all';
+    let searchQuery = '';
+    let currentSort = 'default';
+    let currentView = window.innerWidth < 1024 ? 'card' : 'table';
+
+    // 初始化：同时加载 config.json 和 products.json
+    async function init() {
+      const timestamp = new Date().getTime();
+      
+      // 1. 优先加载公共配置文件 config.json
+      try {
+        const confRes = await fetch(`config.json?t=${timestamp}`);
+        if (confRes.ok) {
+          const loadedConf = await confRes.json();
+          appConfig = Object.assign(appConfig, loadedConf);
+          applyConfig(appConfig);
+        }
+      } catch (e) {
+        console.warn('使用内置默认 config 配置:', e);
+      }
+
+      // 2. 加载库存数据 products.json
+      try {
+        const prodRes = await fetch(`products.json?t=${timestamp}`);
+        if (!prodRes.ok) throw new Error('网络请求异常');
+        const prodData = await prodRes.json();
+        
+        appData.products = prodData.products || prodData || [];
+
+        if (prodData.updated_at) {
+          document.getElementById('statUpdatedTime').textContent = prodData.updated_at;
+        }
+
+        renderStats();
+        updateViewToggleButtons();
+        renderAll();
+      } catch (err) {
+        console.error('加载 products.json 失败:', err);
+        document.getElementById('productTableBody').innerHTML = `
+          <tr>
+            <td colspan="8" class="py-12 text-center text-rose-500">
+              <i class="fa-solid fa-triangle-exclamation text-2xl mb-2"></i>
+              <p>加载数据失败，请确认 products.json 文件是否存在！</p>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // 将 config.json 的设置应用到 DOM
+    function applyConfig(cfg) {
+      if (cfg.site) {
+        if (cfg.site.title) document.title = cfg.site.title;
+        if (cfg.site.brand_name) document.getElementById('brandName').textContent = cfg.site.brand_name;
+        if (cfg.site.subtitle) document.getElementById('brandSubtitle').textContent = cfg.site.subtitle;
+      }
+      if (cfg.affiliate) {
+        if (cfg.affiliate.promo_code) document.getElementById('promoCodeText').textContent = cfg.affiliate.promo_code;
+        if (cfg.affiliate.discount_text) document.getElementById('discountTag').textContent = cfg.affiliate.discount_text;
+      }
+      if (cfg.social && cfg.social.tg_channel) {
+        document.getElementById('tgChannelBtn').href = cfg.social.tg_channel;
+      }
+      if (cfg.footer && cfg.footer.disclaimer) {
+        document.getElementById('footerDisclaimer').textContent = cfg.footer.disclaimer;
+      }
+    }
+
+    // 统计面板
+    function renderStats() {
+      const total = appData.products.length;
+      const inStock = appData.products.filter(p => p.status === 1).length;
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statInStock').textContent = inStock;
+    }
+
+    // 深度分词多条件搜索引擎
+    function getFilteredAndSortedProducts() {
+      let filtered = appData.products.filter(item => {
+        if (currentTag === 'instock' && item.status !== 1) return false;
+        if (currentTag === 'recommend' && item.recommended !== 1) return false;
+        if (currentTag !== 'all' && currentTag !== 'instock' && currentTag !== 'recommend') {
+          if (!item.tags || !item.tags.includes(currentTag)) return false;
+        }
+        return true;
+      });
+
+      if (searchQuery.trim()) {
+        const terms = searchQuery.trim().toLowerCase().split(/\s+/);
+        
+        filtered = filtered.filter(item => {
+          const statusText = item.status === 1 ? "有货 in stock instock 现货 补货" : "缺货 out of stock outofstock 售罄";
+          const recommendText = item.recommended === 1 ? "推荐 热门 hot recommend" : "";
+          
+          let aliases = "";
+          const dc = (item.datacenter || "").toLowerCase();
+          const circuit = (item.circuit_type || "").toLowerCase();
+          const name = (item.name || "").toLowerCase();
+
+          if (dc.includes("hk") || circuit.includes("hk") || name.includes("hk")) aliases += " 香港 hongkong hk ";
+          if (dc.includes("dc6") || dc.includes("dc9") || circuit.includes("gia-e") || circuit.includes("gia")) aliases += " 美西 美国洛杉矶 la us usa cn2gia ";
+          if (dc.includes("tokyo") || dc.includes("osaka") || circuit.includes("tokyo") || circuit.includes("osaka") || name.includes("tokyo") || name.includes("osaka")) aliases += " 日本 东京 大阪 japan jp softbank 软银 ";
+          if (dc.includes("sg") || circuit.includes("sg") || name.includes("sg")) aliases += " 新加坡 singapore sg ";
+          if (dc.includes("dubai") || circuit.includes("dubai")) aliases += " 迪拜 dubai ";
+          if (dc.includes("amsterdam") || circuit.includes("amsterdam") || name.includes("amsterdam")) aliases += " 荷兰 阿姆斯特丹 nl ";
+          if (name.includes("plan") || circuit.includes("plan") || name.includes("chicken") || name.includes("box")) aliases += " 传家宝 神机 限量版 limited ";
+
+          const fullIndex = [
+            item.name || '',
+            item.pid || '',
+            'pid:' + item.pid,
+            item.circuit_type || '',
+            item.datacenter || '',
+            item.cpu ? `${item.cpu}核 ${item.cpu}core ${item.cpu}c` : '',
+            item.memory || '',
+            item.ssd || '',
+            item.band || '',
+            item.bandwidth || '',
+            item.price || '',
+            `$${item.price}`,
+            statusText,
+            recommendText,
+            aliases
+          ].join(' ').toLowerCase();
+
+          return terms.every(term => fullIndex.includes(term));
+        });
+      }
+
+      if (currentSort === 'price-asc') {
+        filtered.sort((a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0));
+      } else if (currentSort === 'price-desc') {
+        filtered.sort((a, b) => (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0));
+      } else if (currentSort === 'mem-asc') {
+        filtered.sort((a, b) => parseMemoryMB(a.memory) - parseMemoryMB(b.memory));
+      } else if (currentSort === 'mem-desc') {
+        filtered.sort((a, b) => parseMemoryMB(b.memory) - parseMemoryMB(a.memory));
+      }
+
+      return filtered;
+    }
+
+    function parseMemoryMB(memStr) {
+      if (!memStr) return 0;
+      const str = memStr.toUpperCase();
+      const val = parseFloat(str) || 0;
+      if (str.includes('G')) return val * 1024;
+      return val;
+    }
+
+    function renderAll() {
+      const filtered = getFilteredAndSortedProducts();
+      document.getElementById('matchCount').textContent = filtered.length;
+
+      const noResults = document.getElementById('noResults');
+      const tableContainer = document.getElementById('tableViewContainer');
+      const cardContainer = document.getElementById('cardViewContainer');
+
+      if (filtered.length === 0) {
+        tableContainer.classList.add('hidden');
+        cardContainer.classList.add('hidden');
+        noResults.classList.remove('hidden');
+        return;
+      }
+
+      noResults.classList.add('hidden');
+
+      if (currentView === 'table') {
+        tableContainer.classList.remove('hidden');
+        cardContainer.classList.add('hidden');
+        renderTable(filtered);
+      } else {
+        tableContainer.classList.add('hidden');
+        cardContainer.classList.remove('hidden');
+        renderCards(filtered);
+      }
+    }
+
+    function renderTable(products) {
+      const tbody = document.getElementById('productTableBody');
+      const affId = appConfig.affiliate?.aff_id || '68648';
+      const discRate = appConfig.affiliate?.discount_rate || 0.0678;
+      const tgChannel = appConfig.social?.tg_channel || 'https://t.me/bwg191';
+
+      const rows = products.map(item => {
+        const isInStock = item.status === 1;
+        const buyUrl = `https://bwh81.net/aff.php?aff=${affId}&pid=${item.pid}`;
+        const rawPrice = parseFloat(item.price) || 0;
+        const discPrice = (rawPrice * (1 - discRate)).toFixed(2);
+
+        const recommendBadge = item.recommended === 1 
+          ? '<span class="inline-flex items-center shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60 ml-2"><i class="fa-solid fa-fire text-amber-500 mr-1 text-[10px]"></i>热门推荐</span>' 
+          : '';
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition group">
+            <td class="py-3 px-3 sm:px-4">
+              <div class="font-semibold text-slate-900 flex items-center whitespace-nowrap">
+                <span class="truncate max-w-[180px] sm:max-w-none">${escapeHtml(item.name)}</span>
+                ${recommendBadge}
+              </div>
+              <div class="text-xs text-slate-400 mt-0.5 flex items-center space-x-2 whitespace-nowrap">
+                <span class="px-1.5 py-0.5 bg-slate-100 rounded text-slate-600 font-mono text-[10px]">PID: ${item.pid}</span>
+                <span class="truncate max-w-[160px] text-[11px]">${escapeHtml(item.circuit_type)}</span>
+              </div>
+            </td>
+            <td class="py-3 px-2 sm:px-3 whitespace-nowrap">
+              <div class="text-slate-800 font-medium">${item.cpu} 核 / ${item.memory}</div>
+              <div class="text-[11px] text-slate-400 font-mono">${item.ssd} SSD</div>
+            </td>
+            <td class="py-3 px-2 sm:px-3 whitespace-nowrap">
+              <div class="text-slate-800 font-medium">${item.band}</div>
+              <div class="text-[11px] text-slate-400">${item.bandwidth}</div>
+            </td>
+            <td class="py-3 px-2 sm:px-3 max-w-[240px]">
+              <div class="text-xs text-slate-600 line-clamp-2 leading-relaxed" title="${escapeHtml(item.datacenter)}">
+                ${escapeHtml(item.datacenter || '常规节点')}
+              </div>
+            </td>
+            <td class="py-3 px-2 sm:px-3 text-right whitespace-nowrap font-mono text-slate-400">
+              <span class="line-through text-xs">$${item.price}</span>
+            </td>
+            <td class="py-3 px-2 sm:px-3 text-right whitespace-nowrap font-mono">
+              <span class="text-base font-bold text-blue-600">$${discPrice}</span>
+              <span class="text-[10px] text-slate-400 block -mt-1">/年或期</span>
+            </td>
+            <td class="py-3 px-2 sm:px-3 text-center whitespace-nowrap">
+              ${
+                isInStock 
+                  ? '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-dot mr-1.5"></span>有货</span>'
+                  : '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-rose-50 text-rose-600 border border-rose-200/80">缺货</span>'
+              }
+            </td>
+            <td class="py-3 px-3 sm:px-4 text-center whitespace-nowrap">
+              ${
+                isInStock
+                  ? `<a href="${buyUrl}" target="_blank" class="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition active:scale-95 space-x-1">
+                      <span>立即抢购</span>
+                      <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>`
+                  : `<a href="${tgChannel}" target="_blank" class="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium transition space-x-1">
+                      <i class="fa-brands fa-telegram text-sky-500"></i>
+                      <span>补货通知</span>
+                    </a>`
+              }
+            </td>
+          </tr>
+        `;
+      }).join('');
+      tbody.innerHTML = rows;
+    }
+
+    function renderCards(products) {
+      const container = document.getElementById('cardViewContainer');
+      const affId = appConfig.affiliate?.aff_id || '68648';
+      const discRate = appConfig.affiliate?.discount_rate || 0.0678;
+      const tgChannel = appConfig.social?.tg_channel || 'https://t.me/bwg191';
+
+      const cards = products.map(item => {
+        const isInStock = item.status === 1;
+        const buyUrl = `https://bwh81.net/aff.php?aff=${affId}&pid=${item.pid}`;
+        const rawPrice = parseFloat(item.price) || 0;
+        const discPrice = (rawPrice * (1 - discRate)).toFixed(2);
+
+        const recommendBadge = item.recommended === 1 
+          ? '<span class="inline-flex items-center shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60"><i class="fa-solid fa-fire text-amber-500 mr-1"></i>推荐</span>' 
+          : '';
+
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs flex flex-col justify-between hover:shadow-md transition space-y-3.5">
+            <div>
+              <div class="flex items-start justify-between gap-2">
+                <div class="space-y-1 flex-1 min-w-0">
+                  <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                    <span class="font-bold text-slate-900 text-sm sm:text-base leading-tight">${escapeHtml(item.name)}</span>
+                    ${recommendBadge}
+                  </div>
+                  <div class="flex items-center space-x-2 text-xs text-slate-400">
+                    <span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded font-mono text-[10px]">PID: ${item.pid}</span>
+                    <span class="truncate font-medium text-slate-500">${escapeHtml(item.circuit_type)}</span>
+                  </div>
+                </div>
+
+                <div class="shrink-0">
+                  ${
+                    isInStock
+                      ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-dot mr-1"></span>有货</span>'
+                      : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-rose-50 text-rose-600 border border-rose-200">缺货</span>'
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 bg-slate-50/80 rounded-xl p-2.5 text-xs">
+              <div class="space-y-0.5">
+                <span class="text-[10px] text-slate-400 uppercase font-semibold">计算 / 内存</span>
+                <p class="font-semibold text-slate-800">${item.cpu} 核 / ${item.memory}</p>
+              </div>
+              <div class="space-y-0.5">
+                <span class="text-[10px] text-slate-400 uppercase font-semibold">高速 SSD</span>
+                <p class="font-semibold text-slate-800 font-mono">${item.ssd}</p>
+              </div>
+              <div class="space-y-0.5">
+                <span class="text-[10px] text-slate-400 uppercase font-semibold">月流量</span>
+                <p class="font-semibold text-slate-800 font-mono">${item.band}</p>
+              </div>
+              <div class="space-y-0.5">
+                <span class="text-[10px] text-slate-400 uppercase font-semibold">网络带宽</span>
+                <p class="font-semibold text-slate-800 font-mono">${item.bandwidth}</p>
+              </div>
+            </div>
+
+            <div class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed bg-slate-50/40 p-2 rounded-lg border border-slate-100">
+              <i class="fa-solid fa-location-dot text-slate-400 mr-1"></i>${escapeHtml(item.datacenter || '常规全球机房')}
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+              <div>
+                <div class="text-[10px] text-slate-400 line-through">$${item.price}</div>
+                <div class="flex items-baseline space-x-1">
+                  <span class="text-lg font-black text-blue-600 font-mono">$${discPrice}</span>
+                  <span class="text-[10px] text-slate-400 font-medium">/期</span>
+                </div>
+              </div>
+
+              <div>
+                ${
+                  isInStock
+                    ? `<a href="${buyUrl}" target="_blank" class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm shadow-blue-500/20 transition active:scale-95 space-x-1.5">
+                        <span>立即抢购</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                      </a>`
+                    : `<a href="${tgChannel}" target="_blank" class="inline-flex items-center justify-center px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium transition space-x-1.5">
+                        <i class="fa-brands fa-telegram text-sky-500"></i>
+                        <span>补货通知</span>
+                      </a>`
+                }
+              </div>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+      container.innerHTML = cards;
+    }
+
+    function switchView(view) {
+      currentView = view;
+      updateViewToggleButtons();
+      renderAll();
+    }
+
+    function updateViewToggleButtons() {
+      const cardBtn = document.getElementById('viewCardBtn');
+      const tableBtn = document.getElementById('viewTableBtn');
+      if (currentView === 'card') {
+        cardBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-blue-600 shadow-xs transition';
+        tableBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-900 transition';
+      } else {
+        tableBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-blue-600 shadow-xs transition';
+        cardBtn.className = 'px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-900 transition';
+      }
+    }
+
+    function changeSort(sortVal) {
+      currentSort = sortVal;
+      renderAll();
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.className = 'tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition';
+        });
+        btn.className = 'tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-blue-600 text-white whitespace-nowrap transition';
+        currentTag = btn.getAttribute('data-tag');
+        renderAll();
+      });
+    });
+
+    const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearSearchBtn');
+
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      if (searchQuery.trim()) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      renderAll();
+    });
+
+    function clearSearch() {
+      searchInput.value = '';
+      searchQuery = '';
+      clearBtn.classList.add('hidden');
+      renderAll();
+      searchInput.focus();
+    }
+
+    function copyPromoCode() {
+      const code = appConfig.affiliate?.promo_code || 'BWHCXZAVFBVY';
+      navigator.clipboard.writeText(code).then(() => {
+        showToast(`优惠码 ${code} 已复制到剪贴板！`);
+        const label = document.getElementById('copyBtnLabel');
+        if (label) {
+          label.textContent = '已复制';
+          setTimeout(() => {
+            label.textContent = '复制';
+          }, 2000);
+        }
+      }).catch(() => {
+        showToast('复制失败，请手动复制');
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.remove('translate-y-16', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-16', 'opacity-0');
+      }, 2500);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[m]);
+    }
+
+    init();
+  </script>
+</body>
+</html>
