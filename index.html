@@ -441,11 +441,12 @@
       const tbody = document.getElementById('productTableBody');
       const affId = appConfig.affiliate?.aff_id || '68648';
       const discRate = appConfig.affiliate?.discount_rate || 0.0678;
+      const promoCode = appConfig.affiliate?.promo_code || 'BWHCXZAVFBVY';
       const tgChannel = appConfig.social?.tg_channel || 'https://t.me/bwg191';
 
       const rows = products.map(item => {
         const isInStock = item.status === 1;
-        const buyUrl = `https://bwh81.net/aff.php?aff=${affId}&pid=${item.pid}`;
+        const buyUrl = `https://bwh81.net/aff.php?aff=${affId}&pid=${item.pid}&promocode=${promoCode}`;
         const rawPrice = parseFloat(item.price) || 0;
         const discPrice = (rawPrice * (1 - discRate)).toFixed(2);
 
@@ -495,7 +496,7 @@
             <td class="py-3 px-3 sm:px-4 text-center whitespace-nowrap">
               ${
                 isInStock
-                  ? `<a href="${buyUrl}" target="_blank" class="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition active:scale-95 space-x-1">
+                  ? `<a href="${buyUrl}" target="_blank" onclick="onBuyClick(event)" class="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition active:scale-95 space-x-1">
                       <span>立即抢购</span>
                       <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                     </a>`
@@ -515,11 +516,12 @@
       const container = document.getElementById('cardViewContainer');
       const affId = appConfig.affiliate?.aff_id || '68648';
       const discRate = appConfig.affiliate?.discount_rate || 0.0678;
+      const promoCode = appConfig.affiliate?.promo_code || 'BWHCXZAVFBVY';
       const tgChannel = appConfig.social?.tg_channel || 'https://t.me/bwg191';
 
       const cards = products.map(item => {
         const isInStock = item.status === 1;
-        const buyUrl = `https://bwh81.net/aff.php?aff=${affId}&pid=${item.pid}`;
+        const buyUrl = `https://bwh81.net/aff.php?aff=${affId}&pid=${item.pid}&promocode=${promoCode}`;
         const rawPrice = parseFloat(item.price) || 0;
         const discPrice = (rawPrice * (1 - discRate)).toFixed(2);
 
@@ -587,7 +589,7 @@
               <div>
                 ${
                   isInStock
-                    ? `<a href="${buyUrl}" target="_blank" class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm shadow-blue-500/20 transition active:scale-95 space-x-1.5">
+                    ? `<a href="${buyUrl}" target="_blank" onclick="onBuyClick(event)" class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm shadow-blue-500/20 transition active:scale-95 space-x-1.5">
                         <span>立即抢购</span>
                         <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                       </a>`
@@ -674,6 +676,16 @@
       }).catch(() => {
         showToast('复制失败，请手动复制');
       });
+    }
+
+    // 用户点击立即抢购时：自动静默将优惠码写入剪贴板并弹出温馨提示
+    function onBuyClick(event) {
+      const code = appConfig.affiliate?.promo_code || 'BWHCXZAVFBVY';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => {
+          showToast(`🎉 优惠码 ${code} 已自动复制！结账时粘贴立省 6.78%`);
+        }).catch(() => {});
+      }
     }
 
     function showToast(msg) {
