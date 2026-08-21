@@ -52,7 +52,7 @@ class Config:
 
         # 返利推广与优惠码
         aff = self.raw_data.get("affiliate", {})
-        self.aff_id = str(aff.get("aff_id", "68648"))
+        self.aff_id = str(aff.get("aff_id", "78613"))
         self.promo_code = aff.get("promo_code", "BWHCXZAVFBVY")
         self.discount_text = aff.get("discount_text", "6.78% 循环优惠")
         self.discount_rate = float(aff.get("discount_rate", 0.0678))
