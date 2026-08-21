@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#1e3a8a" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- 背景圆角矩形 -->
+  <rect width="512" height="512" rx="128" fill="url(#blueGrad)"/>
+  
+  <!-- 服务器机架 1 (顶部) -->
+  <g filter="url(#dropShadow)">
+    <rect x="96" y="110" width="320" height="70" rx="16" fill="#ffffff"/>
+    <circle cx="140" cy="145" r="10" fill="#10b981"/>
+    <circle cx="170" cy="145" r="10" fill="#3b82f6"/>
+    <line x1="220" y1="145" x2="376" y2="145" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  
+  <!-- 服务器机架 2 (中部) -->
+  <g filter="url(#dropShadow)">
+    <rect x="96" y="221" width="320" height="70" rx="16" fill="#ffffff"/>
+    <circle cx="140" cy="256" r="10" fill="#10b981"/>
+    <circle cx="170" cy="256" r="10" fill="#3b82f6"/>
+    <line x1="220" y1="256" x2="376" y2="256" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  
+  <!-- 服务器机架 3 (底部) -->
+  <g filter="url(#dropShadow)">
+    <rect x="96" y="332" width="320" height="70" rx="16" fill="#ffffff"/>
+    <circle cx="140" cy="367" r="10" fill="#10b981"/>
+    <circle cx="170" cy="367" r="10" fill="#3b82f6"/>
+    <line x1="220" y1="367" x2="376" y2="367" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round"/>
+  </g>
+</svg>
