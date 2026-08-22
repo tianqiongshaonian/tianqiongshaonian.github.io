@@ -290,35 +290,73 @@ class ProductSyncManager:
 
     @staticmethod
     def _infer_metadata(name):
-        """根据套餐名称智能推导分类标签、线路类型与默认机房"""
+        """根据套餐英文名称智能推导全中文分类标签、线路类型与中文机房别名"""
         name_lower = name.lower()
         tags = []
         circuit_type = "常规 KVM"
-        datacenter = "常规全球机房 (支持切换机房)"
+        datacenter = "常规全球机房 (支持后台免费迁移机房)"
 
+        # 1. 区域与优化线路智能中文化匹配
         if "hong kong" in name_lower or "hk" in name_lower:
             tags.append("hk")
-            circuit_type = "香港 CN2 GIA / CMI"
-            datacenter = "中国香港 HKHK_8 机房"
+            circuit_type = "香港 CN2 GIA / CMI 顶级直连"
+            datacenter = "中国香港 HKHK_8 / HK85 机房"
         elif "tokyo" in name_lower or "osaka" in name_lower or "japan" in name_lower:
             tags.append("japan")
-            circuit_type = "日本软银 / CN2 GIA"
-            datacenter = "日本东京 / 大阪机房"
+            circuit_type = "日本软银 / CN2 GIA 高速直连"
+            datacenter = "日本东京 JPTYO_8 (CN2 GIA) / 大阪 JPOS_1 (软银)"
         elif "singapore" in name_lower or "sg" in name_lower:
             tags.append("singapore")
-            circuit_type = "新加坡 CN2 GIA"
+            circuit_type = "新加坡 CN2 GIA / 联通 9929"
             datacenter = "新加坡 SGSG_1 机房"
+        elif "sydney" in name_lower or "australia" in name_lower:
+            tags.append("cn2gia")
+            circuit_type = "澳大利亚悉尼 联通 9929"
+            datacenter = "澳大利亚悉尼 AUSYD_1 机房"
+        elif "dubai" in name_lower or "aedxb" in name_lower:
+            tags.append("limited")
+            circuit_type = "中东阿联酋迪拜原生 IP"
+            datacenter = "阿联酋迪拜 AEDXB_1 机房"
+        elif "amsterdam" in name_lower or "netherlands" in name_lower or "eunl" in name_lower:
+            tags.append("limited")
+            circuit_type = "荷兰阿姆斯特丹 联通 9929"
+            datacenter = "荷兰阿姆斯特丹 EUNL_9 (中国联通 AS9929 / CMIN2 优化)"
         elif "cn2 gia" in name_lower or "gia-e" in name_lower or "dc6" in name_lower or "dc9" in name_lower:
             tags.append("cn2gia")
-            circuit_type = "美西 CN2 GIA-E 优化线路"
-            datacenter = "洛杉矶 DC6 CN2 GIA-E / DC9 / 软银 / 欧洲多机房"
+            circuit_type = "美西 CN2 GIA-E 顶级优化线路"
+            datacenter = "洛杉矶 DC6 CN2 GIA-E / DC9 / 日本软银 / 欧洲等多机房"
+        elif "cn2" in name_lower:
+            tags.append("cn2gia")
+            circuit_type = "洛杉矶 CN2 GT 优化线路"
+            datacenter = "洛杉矶 DC3 CN2 / DC2 AO / 弗里蒙特等机房"
+        elif "fremont" in name_lower:
+            tags.append("kvm")
+            circuit_type = "美西弗里蒙特 HE 线路"
+            datacenter = "美国加州弗里蒙特 Fremont 机房"
         elif "kvm" in name_lower:
             tags.append("kvm")
             circuit_type = "KVM 常规系列"
             datacenter = "DC3 CN2/DC2 AO/DC8 ZNET/弗里蒙特/新泽西/荷兰等"
 
-        if "plan" in name_lower or "limited" in name_lower or "special" in name_lower or "chicken" in name_lower or "box" in name_lower:
+        # 2. 限量版与神机系列标签
+        if "plan" in name_lower:
             tags.append("limited")
+            if "tokyo plan" in name_lower:
+                circuit_type = "日本东京限量版 (CN2 GIA)"
+            elif "amsterdam plan" in name_lower:
+                circuit_type = "荷兰阿姆斯特丹限量版 (9929)"
+            else:
+                circuit_type = "The Plan 全球 17+ 机房多机房大带宽旗舰方案"
+                datacenter = "中国香港 HK85、日本软银、DC6 CN2 GIA-E、DC9 CN2 GIA 等 19 个机房"
+
+        if "chicken" in name_lower or "minichicken" in name_lower:
+            tags.append("limited")
+            circuit_type = "美西微型特惠传家宝方案"
+            datacenter = "美西洛杉矶 DC2 / 弗里蒙特机房"
+
+        if "box" in name_lower or "nodeseek" in name_lower or "biggerbox" in name_lower or "megabox" in name_lower:
+            tags.append("limited")
+            circuit_type = "社区定制高配限量版"
 
         if not tags:
             tags.append("kvm")
