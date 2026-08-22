@@ -266,11 +266,17 @@
 
     let currentTag = 'all';
     let searchQuery = '';
-    let currentSort = 'default';
-    let currentView = window.innerWidth < 1024 ? 'card' : 'table';
+    
+    // 从 localStorage 读取用户偏好（排序与视图模式）
+    let currentSort = localStorage.getItem('bwh_stock_sort') || 'default';
+    let currentView = localStorage.getItem('bwh_stock_view') || (window.innerWidth < 1024 ? 'card' : 'table');
 
     // 初始化：同时加载 config.json 和 products.json
     async function init() {
+      // 还原排序下拉选框状态
+      const sortSelect = document.getElementById('sortSelect');
+      if (sortSelect) sortSelect.value = currentSort;
+
       await loadData();
       // 每隔 60 秒在后台静默拉取一次最新数据，无需用户手动刷新
       setInterval(loadData, 60000);
@@ -330,10 +336,10 @@
       }
     }
 
-    // 统计面板
+    // 统计面板 (类型安全转换)
     function renderStats() {
       const total = appData.products.length;
-      const inStock = appData.products.filter(p => p.status === 1).length;
+      const inStock = appData.products.filter(p => Number(p.status) === 1).length;
       document.getElementById('statTotal').textContent = total;
       document.getElementById('statInStock').textContent = inStock;
     }
@@ -341,8 +347,11 @@
     // 深度分词多条件搜索引擎
     function getFilteredAndSortedProducts() {
       let filtered = appData.products.filter(item => {
-        if (currentTag === 'instock' && item.status !== 1) return false;
-        if (currentTag === 'recommend' && item.recommended !== 1) return false;
+        const isItemInStock = Number(item.status) === 1;
+        const isItemRecommended = Number(item.recommended) === 1;
+
+        if (currentTag === 'instock' && !isItemInStock) return false;
+        if (currentTag === 'recommend' && !isItemRecommended) return false;
         if (currentTag !== 'all' && currentTag !== 'instock' && currentTag !== 'recommend') {
           if (!item.tags || !item.tags.includes(currentTag)) return false;
         }
@@ -353,8 +362,8 @@
         const terms = searchQuery.trim().toLowerCase().split(/\s+/);
         
         filtered = filtered.filter(item => {
-          const statusText = item.status === 1 ? "有货 in stock instock 现货 补货" : "缺货 out of stock outofstock 售罄";
-          const recommendText = item.recommended === 1 ? "推荐 热门 hot recommend" : "";
+          const statusText = Number(item.status) === 1 ? "有货 in stock instock 现货 补货" : "缺货 out of stock outofstock 售罄";
+          const recommendText = Number(item.recommended) === 1 ? "推荐 热门 hot recommend" : "";
           
           let aliases = "";
           const dc = (item.datacenter || "").toLowerCase();
@@ -406,7 +415,7 @@
 
     function parseMemoryMB(memStr) {
       if (!memStr) return 0;
-      const str = memStr.toUpperCase();
+      const str = String(memStr).toUpperCase();
       const val = parseFloat(str) || 0;
       if (str.includes('G')) return val * 1024;
       return val;
@@ -448,13 +457,13 @@
       const tgChannel = appConfig.social?.tg_channel || 'https://t.me/bwg191';
 
       const rows = products.map(item => {
-        const isInStock = item.status === 1;
-        const buyUrl = `https://bwh81.net/aff.php?aff=${affId}&pid=${item.pid}&promocode=${promoCode}`;
+        const isInStock = Number(item.status) === 1;
+        const buyUrl = `https://bwh81.net/aff.php?aff=${encodeURIComponent(affId)}&pid=${encodeURIComponent(item.pid)}&promocode=${encodeURIComponent(promoCode)}`;
         const rawPrice = parseFloat(item.price) || 0;
         const discPrice = (rawPrice * (1 - discRate)).toFixed(2);
         const billingCycle = item.billing_cycle || '年付';
 
-        const recommendBadge = item.recommended === 1 
+        const recommendBadge = Number(item.recommended) === 1 
           ? '<span class="inline-flex items-center shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60 ml-2"><i class="fa-solid fa-fire text-amber-500 mr-1 text-[10px]"></i>热门推荐</span>' 
           : '';
 
@@ -470,12 +479,12 @@
               </div>
             </td>
             <td class="py-3 px-2 sm:px-3 whitespace-nowrap">
-              <div class="text-slate-800 font-medium">${item.cpu} 核 / ${item.memory}</div>
-              <div class="text-[11px] text-slate-400 font-mono">${item.ssd} SSD</div>
+              <div class="text-slate-800 font-medium">${escapeHtml(item.cpu)} 核 / ${escapeHtml(item.memory)}</div>
+              <div class="text-[11px] text-slate-400 font-mono">${escapeHtml(item.ssd)} SSD</div>
             </td>
             <td class="py-3 px-2 sm:px-3 whitespace-nowrap">
-              <div class="text-slate-800 font-medium">${item.band}</div>
-              <div class="text-[11px] text-slate-400">${item.bandwidth}</div>
+              <div class="text-slate-800 font-medium">${escapeHtml(item.band)}</div>
+              <div class="text-[11px] text-slate-400">${escapeHtml(item.bandwidth)}</div>
             </td>
             <td class="py-3 px-2 sm:px-3 max-w-[240px]">
               <div class="text-xs text-slate-600 line-clamp-2 leading-relaxed" title="${escapeHtml(item.datacenter)}">
@@ -483,10 +492,10 @@
               </div>
             </td>
             <td class="py-3 px-2 sm:px-3 text-right whitespace-nowrap font-mono text-slate-400">
-              <span class="line-through text-xs">$${item.price}</span>
+              <span class="line-through text-xs">$${escapeHtml(item.price)}</span>
             </td>
             <td class="py-3 px-2 sm:px-3 text-right whitespace-nowrap font-mono">
-              <span class="text-base font-bold text-blue-600">$${discPrice}</span>
+              <span class="text-base font-bold text-blue-600">$${escapeHtml(discPrice)}</span>
               <span class="text-[10px] text-slate-400 block -mt-1">/${escapeHtml(billingCycle)}</span>
             </td>
             <td class="py-3 px-2 sm:px-3 text-center whitespace-nowrap">
@@ -503,7 +512,7 @@
                       <span>立即抢购</span>
                       <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                     </a>`
-                  : `<a href="${tgChannel}" target="_blank" class="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium transition space-x-1">
+                  : `<a href="${escapeHtml(tgChannel)}" target="_blank" class="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium transition space-x-1">
                       <i class="fa-brands fa-telegram text-sky-500"></i>
                       <span>补货通知</span>
                     </a>`
@@ -523,13 +532,13 @@
       const tgChannel = appConfig.social?.tg_channel || 'https://t.me/bwg191';
 
       const cards = products.map(item => {
-        const isInStock = item.status === 1;
-        const buyUrl = `https://bwh81.net/aff.php?aff=${affId}&pid=${item.pid}&promocode=${promoCode}`;
+        const isInStock = Number(item.status) === 1;
+        const buyUrl = `https://bwh81.net/aff.php?aff=${encodeURIComponent(affId)}&pid=${encodeURIComponent(item.pid)}&promocode=${encodeURIComponent(promoCode)}`;
         const rawPrice = parseFloat(item.price) || 0;
         const discPrice = (rawPrice * (1 - discRate)).toFixed(2);
         const billingCycle = item.billing_cycle || '年付';
 
-        const recommendBadge = item.recommended === 1 
+        const recommendBadge = Number(item.recommended) === 1 
           ? '<span class="inline-flex items-center shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60"><i class="fa-solid fa-fire text-amber-500 mr-1"></i>推荐</span>' 
           : '';
 
@@ -560,19 +569,19 @@
             <div class="grid grid-cols-2 gap-2 bg-slate-50/80 rounded-xl p-2.5 text-xs">
               <div class="space-y-0.5">
                 <span class="text-[10px] text-slate-400 uppercase font-semibold">计算 / 内存</span>
-                <p class="font-semibold text-slate-800 break-words">${item.cpu} 核 / ${item.memory}</p>
+                <p class="font-semibold text-slate-800 break-words">${escapeHtml(item.cpu)} 核 / ${escapeHtml(item.memory)}</p>
               </div>
               <div class="space-y-0.5">
                 <span class="text-[10px] text-slate-400 uppercase font-semibold">高速 SSD</span>
-                <p class="font-semibold text-slate-800 font-mono break-words">${item.ssd}</p>
+                <p class="font-semibold text-slate-800 font-mono break-words">${escapeHtml(item.ssd)}</p>
               </div>
               <div class="space-y-0.5">
                 <span class="text-[10px] text-slate-400 uppercase font-semibold">月流量</span>
-                <p class="font-semibold text-slate-800 font-mono break-words">${item.band}</p>
+                <p class="font-semibold text-slate-800 font-mono break-words">${escapeHtml(item.band)}</p>
               </div>
               <div class="space-y-0.5">
                 <span class="text-[10px] text-slate-400 uppercase font-semibold">网络带宽</span>
-                <p class="font-semibold text-slate-800 font-mono break-words">${item.bandwidth}</p>
+                <p class="font-semibold text-slate-800 font-mono break-words">${escapeHtml(item.bandwidth)}</p>
               </div>
             </div>
 
@@ -585,9 +594,9 @@
 
             <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
               <div class="min-w-0">
-                <div class="text-[10px] text-slate-400 line-through font-mono">$${item.price}</div>
+                <div class="text-[10px] text-slate-400 line-through font-mono">$${escapeHtml(item.price)}</div>
                 <div class="flex items-baseline space-x-0.5">
-                  <span class="text-xl font-extrabold text-blue-600 font-mono">$${discPrice}</span>
+                  <span class="text-xl font-extrabold text-blue-600 font-mono">$${escapeHtml(discPrice)}</span>
                   <span class="text-xs text-slate-500 font-medium whitespace-nowrap">/${escapeHtml(billingCycle)}</span>
                 </div>
               </div>
@@ -599,7 +608,7 @@
                         <span>立即抢购</span>
                         <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                       </a>`
-                    : `<a href="${tgChannel}" target="_blank" class="inline-flex items-center justify-center px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium transition space-x-1.5 whitespace-nowrap">
+                    : `<a href="${escapeHtml(tgChannel)}" target="_blank" class="inline-flex items-center justify-center px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium transition space-x-1.5 whitespace-nowrap">
                         <i class="fa-brands fa-telegram text-sky-500"></i>
                         <span>补货通知</span>
                       </a>`
@@ -615,6 +624,7 @@
 
     function switchView(view) {
       currentView = view;
+      localStorage.setItem('bwh_stock_view', view);
       updateViewToggleButtons();
       renderAll();
     }
@@ -633,6 +643,7 @@
 
     function changeSort(sortVal) {
       currentSort = sortVal;
+      localStorage.setItem('bwh_stock_sort', sortVal);
       renderAll();
     }
 
@@ -647,17 +658,24 @@
       });
     });
 
+    // 搜索输入防抖处理 (120ms Debounce)
+    let searchDebounceTimer = null;
     const searchInput = document.getElementById('searchInput');
     const clearBtn = document.getElementById('clearSearchBtn');
 
     searchInput.addEventListener('input', (e) => {
-      searchQuery = e.target.value;
-      if (searchQuery.trim()) {
+      const val = e.target.value;
+      if (val.trim()) {
         clearBtn.classList.remove('hidden');
       } else {
         clearBtn.classList.add('hidden');
       }
-      renderAll();
+
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        searchQuery = val;
+        renderAll();
+      }, 120);
     });
 
     function clearSearch() {

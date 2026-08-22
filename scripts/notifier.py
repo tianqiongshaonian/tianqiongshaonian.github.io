@@ -5,6 +5,7 @@
 负责消息模板渲染、Telegram 机器人消息发送与自动置顶
 """
 
+import html
 import json
 import urllib.request
 import urllib.parse
@@ -23,45 +24,32 @@ class TelegramNotifier:
         return bool(self.bot_token and self.chat_id)
 
     def render_message(self, product):
-        """根据配置模板渲染补货通知文本"""
+        """根据配置模板渲染补货通知文本 (自动对特殊字符进行 HTML 实体转义)"""
         buy_url = f"https://bwh81.net/aff.php?aff={self.config.aff_id}&pid={product.get('pid', '')}"
+        
+        safe_fields = {
+            "name": html.escape(str(product.get("name", ""))),
+            "circuit_type": html.escape(str(product.get("circuit_type", ""))),
+            "cpu": html.escape(str(product.get("cpu", ""))),
+            "memory": html.escape(str(product.get("memory", ""))),
+            "ssd": html.escape(str(product.get("ssd", ""))),
+            "band": html.escape(str(product.get("band", ""))),
+            "bandwidth": html.escape(str(product.get("bandwidth", ""))),
+            "datacenter": html.escape(str(product.get("datacenter", ""))),
+            "price": html.escape(str(product.get("price", ""))),
+            "billing_cycle": html.escape(str(product.get("billing_cycle", "年付"))),
+            "pid": html.escape(str(product.get("pid", ""))),
+            "promo_code": html.escape(str(self.config.promo_code)),
+            "discount_text": html.escape(str(self.config.discount_text)),
+            "buy_url": buy_url,
+            "site_url": self.config.site_url
+        }
+
         try:
-            return self.config.tg_template.format(
-                name=product.get("name", ""),
-                circuit_type=product.get("circuit_type", ""),
-                cpu=product.get("cpu", ""),
-                memory=product.get("memory", ""),
-                ssd=product.get("ssd", ""),
-                band=product.get("band", ""),
-                bandwidth=product.get("bandwidth", ""),
-                datacenter=product.get("datacenter", ""),
-                price=product.get("price", ""),
-                billing_cycle=product.get("billing_cycle", "年付"),
-                pid=product.get("pid", ""),
-                promo_code=self.config.promo_code,
-                discount_text=self.config.discount_text,
-                buy_url=buy_url,
-                site_url=self.config.site_url
-            )
+            return self.config.tg_template.format(**safe_fields)
         except Exception as e:
             print(f"[-] 模板自定义渲染失败，降级为默认模板: {e}")
-            return self.config.DEFAULT_TEMPLATE.format(
-                name=product.get("name", ""),
-                circuit_type=product.get("circuit_type", ""),
-                cpu=product.get("cpu", ""),
-                memory=product.get("memory", ""),
-                ssd=product.get("ssd", ""),
-                band=product.get("band", ""),
-                bandwidth=product.get("bandwidth", ""),
-                datacenter=product.get("datacenter", ""),
-                price=product.get("price", ""),
-                billing_cycle=product.get("billing_cycle", "年付"),
-                pid=product.get("pid", ""),
-                promo_code=self.config.promo_code,
-                discount_text=self.config.discount_text,
-                buy_url=buy_url,
-                site_url=self.config.site_url
-            )
+            return self.config.DEFAULT_TEMPLATE.format(**safe_fields)
 
     def send_message(self, text, auto_pin=None):
         """发送单条消息并可选自动置顶"""

@@ -54,6 +54,7 @@ jobs:
           if [ -n "$(git status --porcelain products.json)" ]; then
             git add products.json
             git commit -m "chore(data): 自动更新库存状态 [skip ci]"
+            git pull --rebase origin main || true
             git push origin main
           else
             echo "库存数据无变动，跳过 Commit。"

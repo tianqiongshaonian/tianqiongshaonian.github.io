@@ -34,7 +34,7 @@ class StockChecker:
         self.timeout = timeout
 
     def check_pid(self, pid, retries=3):
-        """探测单个 PID 套餐库存状态 (0: 缺货, 1: 有货, None: 探测异常)"""
+        """探测单个 PID 套餐库存状态 (0: 缺货, 1: 有货, None: 探测异常/未定)"""
         # 随机微小延时，防止瞬间高并发触发 Cloudflare / 503 频控
         time.sleep(random.uniform(0.1, 0.35))
 
@@ -53,16 +53,27 @@ class StockChecker:
                 req = urllib.request.Request(url, headers=headers)
                 with urllib.request.urlopen(req, timeout=self.timeout) as response:
                     content = response.read().decode("utf-8", errors="ignore")
+                    content_lower = content.lower()
 
-                    # 1. 明确提示 Out of Stock 则为缺货
-                    if "Out of Stock" in content or "currently out of stock" in content.lower():
+                    # 1. 过滤 Cloudflare / 质询 / 防护拦截页 (不可作为正常页面判定，触发切换备用域名重试)
+                    waf_signatures = ["cf-chl", "challenge-platform", "just a moment", "attention required", "security check", "turnstile"]
+                    if any(sig in content_lower for sig in waf_signatures):
+                        raise ValueError(f"命中 WAF/Cloudflare 质询拦截 ({domain})")
+
+                    # 2. 明确缺货特征 (包含 Out of Stock 或 Errorbox 缺货提示)
+                    if "out of stock" in content_lower or "currently out of stock" in content_lower:
                         return pid, 0
 
-                    # 2. 包含购物车结账或配置项则为有货
-                    if "order-web20cart" in content or "cart.php" in response.url or "Configure" in content:
+                    # 3. 正向有货特征 (包含购物车关键元素、且无 Errorbox 报错)
+                    if ("shopping cart" in content_lower or "order now" in content_lower or "view cart" in content_lower) and "errorbox" not in content_lower:
                         return pid, 1
 
-                    return pid, 0
+                    # 4. 未明确匹配到任何已知特征，视为异常响应
+                    if attempt == retries - 1:
+                        print(f"[-] PID {pid} 返回未识别页面结构 ({domain})")
+                        return pid, None
+                    time.sleep(1)
+
             except Exception as e:
                 if attempt == retries - 1:
                     print(f"[-] PID {pid} 检测失败 ({domain}): {e}")
