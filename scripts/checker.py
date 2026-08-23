@@ -23,6 +23,7 @@ if PROJECT_ROOT not in sys.path:
 
 from scripts.config import Config, JSON_PATH, DOMAINS, USER_AGENTS
 from scripts.notifier import TelegramNotifier
+from scripts.build_html import generate_index_html, update_sitemap
 
 class StockChecker:
     """搬瓦工库存探测器"""
@@ -142,6 +143,13 @@ class StockChecker:
 
         with open(JSON_PATH, "w", encoding="utf-8") as f:
             json.dump(output_data, f, ensure_ascii=False, indent=2)
+
+        # 同步触发 index.html 静态预渲染与 sitemap.xml 更新 (实现 SEO & AI 爬虫极致友好)
+        try:
+            generate_index_html()
+            update_sitemap()
+        except Exception as e:
+            print(f"[-] 静态预渲染失败: {e}")
 
         elapsed = round(time.time() - start_time, 2)
         print(f"[✓] 检测完毕！耗时: {elapsed}s | 当前有货: {in_stock_count}/{len(products)}")

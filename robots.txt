@@ -1,0 +1,61 @@
+# robots.txt for 搬瓦工库存监控 (https://tianqiongshaonian.github.io/)
+# 允许所有主流搜索引擎与 AI 爬虫抓取
+
+User-agent: *
+Allow: /
+
+# 主流搜索引擎爬虫
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Sogou web spider
+Allow: /
+
+User-agent: 360Spider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# 现代化 AI 搜索引擎与 LLM 爬虫 (SearchGPT, ChatGPT, Perplexity, Claude, Applebot 等)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: DeepSeekBot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# 站点地图与 LLM 索引路径
+Sitemap: https://tianqiongshaonian.github.io/sitemap.xml

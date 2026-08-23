@@ -1,0 +1,41 @@
+# 搬瓦工库存监控 (BandwagonHost Stock & Restock Monitor)
+
+> 全网最全的搬瓦工 (BandwagonHost) VPS 实时库存监控、自动补货提醒与最新优惠码发布平台。
+
+## 项目概览 (Overview)
+- **官网监控地址**: https://tianqiongshaonian.github.io/
+- **数据更新频率**: 每 10 分钟云端自动化探测 (GitHub Actions 驱动)
+- **最新循环优惠码**: `BWHCXZAVFBVY` (结账立省 6.78% 循环折扣)
+- **补货通知频道**: https://t.me/bwg191
+- **官方镜像支持**: bwh81.net, bwh88.net, bandwagonhost.com
+
+## 核心推荐套餐 (Top Recommended Plans)
+1. **The Plan / 限量版系列 (传家宝)**
+   - 特点: 支持多达 17+ 全球机房自由免费相互迁移 (包括 DC6 CN2 GIA-E, DC9 CN2 GIA, 日本软银, 荷兰联通 9929, 澳大利亚联通 9929, 加拿大温哥华等)。
+   - 典型规格: 2核 CPU / 2GB 内存 / 40GB SSD / 1000GB 月流量 / 2.5Gbps 带宽。
+   - 官方价格: ~$99 - $119 / 年。
+
+2. **香港 CN2 GIA (HKHK_8 极速方案)**
+   - 特点: 电信 CN2 GIA + 联通 AS9929/AS10099 + 移动 CMI 直连，三网延迟低至 10-30ms，媲美国内 BGP 体验。
+   - 典型规格: 2核 CPU / 2GB - 32GB 内存 / 40GB - 640GB SSD / 500GB - 8000GB 流量 / 1Gbps 带宽。
+   - 适用场景: 对网络延迟要求极高的高端建站与亚太金融业务。
+
+3. **日本东京 / 大阪 CN2 GIA & 软银 (Tokyo / Osaka)**
+   - 特点: 日本东京 CN2 GIA (三网顶级优化) 与大阪 Softbank (联通直连神线)，国内访问延迟 40-70ms。
+   - 典型规格: 2核 CPU / 2GB 内存 / 40GB SSD / 500GB 流量 / 1.2Gbps 带宽。
+
+4. **美西洛杉矶 CN2 GIA-E (DC6 / DC9 主力方案)**
+   - 特点: 性价比之王，最高 10Gbps 超大企业级 CN2 GIA 专线带宽，晚高峰全天候不卡顿，自带免费机房切换能力。
+   - 典型规格: 2核 CPU / 1GB - 64GB 内存 / 20GB - 1280GB SSD / 1000GB - 128000GB 流量 / 2.5Gbps - 10Gbps 带宽。
+   - 官方价格: 起步约 $49.99 - $89.99 / 半年起或年付。
+
+## 常见问题与操作指引 (FAQ)
+- **如何使用优惠码**: 选定方案进入购物车结算页面，在 `Promotional Code` 输入框填写 `BWHCXZAVFBVY` 并点击 `Validate Code` 即可享受 6.78% 折扣。
+- **机房切换**: 购买后在搬瓦工 KiwiVM 控制面板点击 `Migrate to another DC` 即可免费一键迁移机房，系统自动分配新机房 IP，数据完整保留。
+- **补货通知**: 缺货方案可通过 Telegram 频道 `https://t.me/bwg191` 获取毫秒级补货上线提醒并自动置顶。
+
+## 机器可读数据接口 (Machine-readable Endpoints)
+- **JSON 实时库存源**: https://tianqiongshaonian.github.io/products.json
+- **站点全局配置文件**: https://tianqiongshaonian.github.io/config.json
+- **站点地图**: https://tianqiongshaonian.github.io/sitemap.xml
+- **完整知识库**: https://tianqiongshaonian.github.io/llms-full.txt

@@ -22,6 +22,10 @@
   - 探测到从“缺货”变为“有货”时，机器人自动向指定频道/群组推送精美卡片，并**自动置顶最新补货消息**。
 - 🎨 **100% 纯本地化静态资源**：
   - 独立编译精简版 Tailwind CSS 与本地 Font Awesome 图标字体，**零外部 CDN 依赖**，控制台 0 警告，首屏极速秒开。
+- 🚀 **极致 SEO 与 AI 抓取优化 (GEO / AI SEO Ready)**：
+  - **双模渲染**：集成静态预渲染（Static Pre-rendering）+ 动态水合，爬虫与 AI（SearchGPT、Claude、Perplexity 等）无需执行 JS 即可秒抓全站 78+ 款方案、配置、实时库存与价格。
+  - **结构化数据**：内嵌完整的 Schema.org (`WebSite`, `Product`, `ItemList`, `FAQPage`) JSON-LD，尊享 Google 富媒体搜索摘要与 AI 权威引用。
+  - **全套搜索引擎与 AI 规范**：开箱即用 `robots.txt`、`sitemap.xml`、`llms.txt` 与 `llms-full.txt`，全面拥抱 AI 搜索时代。
 - ⚙️ **极简配置架构**：
   - 所有的返利 ID、优惠码、Telegram 频道、消息模板均统一由 [`config.json`](config.json) 控制，改一处全站同步！
 
@@ -31,8 +35,12 @@
 
 ```text
 ├── config.json                 # ⭐️ 全局唯一配置文件（返利ID、优惠码、TG推送模板等）
-├── index.html                  # 现代化响应式前端网页（PC表格 + 移动端卡片）
+├── index.html                  # 现代化响应式前端网页（静态预渲染 + PC表格/移动卡片）
 ├── products.json               # 核心数据源（78+ 款搬瓦工套餐配置与实时库存）
+├── robots.txt                  # 搜索引擎与 AI 爬虫抓取协议规范
+├── sitemap.xml                 # XML 站点地图（自动更新时间戳）
+├── llms.txt                    # 🤖 面向大模型与 AI Agent 的精炼摘要规范
+├── llms-full.txt               # 📚 面向大模型的搬瓦工完整知识库文档
 ├── static/                     # 🎨 100% 本地化静态样式与字体库
 │   ├── css/
 │   │   └── tailwind.min.css    # 本地编译的高性能独立 Tailwind CSS
@@ -40,6 +48,7 @@
 ├── scripts/                    # 🐍 模块化 Python 后端探测与推送系统
 │   ├── __init__.py             # Python 包初始化文件
 │   ├── config.py               # 配置中心：统一解析 config.json 与环境变量
+│   ├── build_html.py           # 静态预渲染与 SEO/Sitemap 构建器
 │   ├── notifier.py             # 通知模块：负责 TG 模板渲染、消息发送与自动置顶
 │   ├── checker.py              # 探测核心：多线程高并发库存探测与数据落地
 │   └── test_tg.py              # 调试工具：命令行一键测试 Telegram 推送与置顶
