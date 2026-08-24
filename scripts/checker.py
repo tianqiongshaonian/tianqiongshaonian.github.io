@@ -110,7 +110,9 @@ class StockChecker:
 
         # 比对库存状态变化
         restocked_items = []
+        out_of_stock_items = []
         in_stock_count = 0
+        has_status_change = False
 
         for p in products:
             pid_str = str(p["pid"])
@@ -118,10 +120,15 @@ class StockChecker:
                 new_status = results[pid_str]
                 old_status = p.get("status", 0)
 
-                # 检测到 0 -> 1 补货
-                if old_status == 0 and new_status == 1:
-                    restocked_items.append(p)
-                    print(f"[🔥 发现补货] {p['name']} (PID: {p['pid']}) 重新有货！")
+                # 检测到状态变化
+                if old_status != new_status:
+                    has_status_change = True
+                    if old_status == 0 and new_status == 1:
+                        restocked_items.append(p)
+                        print(f"[🔥 发现补货] {p['name']} (PID: {p['pid']}) 重新有货！")
+                    elif old_status == 1 and new_status == 0:
+                        out_of_stock_items.append(p)
+                        print(f"[❄️ 套餐售罄] {p['name']} (PID: {p['pid']}) 已断货。")
 
                 p["status"] = new_status
                 if new_status == 1:
@@ -129,6 +136,19 @@ class StockChecker:
             else:
                 if p.get("status", 0) == 1:
                     in_stock_count += 1
+
+        # 若发生真实库存变动，创建标记文件供 GitHub Actions 读取
+        flag_file = os.path.join(PROJECT_ROOT, ".has_stock_change")
+        if has_status_change:
+            with open(flag_file, "w", encoding="utf-8") as f:
+                f.write("1")
+            print("[*] 检测到套餐库存状态变化，已生成变动标记。")
+        else:
+            if os.path.exists(flag_file):
+                try:
+                    os.remove(flag_file)
+                except OSError:
+                    pass
 
         # 更新时间戳（北京时间 UTC+8）
         utc_dt = datetime.now(timezone.utc)

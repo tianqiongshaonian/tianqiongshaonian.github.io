@@ -26,6 +26,9 @@
   - **双模渲染**：集成静态预渲染（Static Pre-rendering）+ 动态水合，爬虫与 AI（SearchGPT、Claude、Perplexity 等）无需执行 JS 即可秒抓全站 78+ 款方案、配置、实时库存与价格。
   - **结构化数据**：内嵌完整的 Schema.org (`WebSite`, `Product`, `ItemList`, `FAQPage`) JSON-LD，尊享 Google 富媒体搜索摘要与 AI 权威引用。
   - **全套搜索引擎与 AI 规范**：开箱即用 `robots.txt`、`sitemap.xml`、`llms.txt` 与 `llms-full.txt`，全面拥抱 AI 搜索时代。
+- 🛡️ **智能提交流水线与 14 天长效心跳保活**：
+  - **零垃圾提交**：无变动时仅构建并发布最新页面到 Pages，仅在真实发生补货/售罄变动时才触发 Git Commit。
+  - **突破 60 天休眠限制**：内置双模提交，每 14 天自动由 PAT 签发一次心跳活跃记录，定时任务永久全自动运行。
 - ⚙️ **极简配置架构**：
   - 所有的返利 ID、优惠码、Telegram 频道、消息模板均统一由 [`config.json`](config.json) 控制，改一处全站同步！
 
@@ -111,16 +114,18 @@
 }
 ```
 
-#### 2. 配置 Telegram 机器人自动推送密钥（可选但强烈推荐）
+#### 2. 配置 Telegram 推送与永久保活密钥（强烈推荐）
 
-如果你希望在有货时自动推送到你的 Telegram 频道/群组：
+为实现 **补货即时通知** 以及 **突破 GitHub 60 天休眠限制**，请在 GitHub 仓库中配置以下 Secrets：
 
-1. 打开 Telegram，搜索官方机器人 [@BotFather](https://t.me/BotFather)，发送 `/newbot` 获取你的 **Bot Token**（形如 `123456789:ABCdefGhIJKlm...`）。
-2. 将你的机器人**拉进你的频道/群组，并将其设为管理员（Administrator）**，务必开启 **「Post Messages（发布消息）」** 和 **「Pin Messages（置顶消息）」** 权限。
-3. 打开 GitHub 仓库页面 $\rightarrow$ **Settings** $\rightarrow$ **Secrets and variables** $\rightarrow$ **Actions**。
-4. 点击 **New repository secret**，添加以下两个密钥：
-   * `TG_BOT_TOKEN`: 填入刚才 BotFather 给你的 Token
-   * `TG_CHAT_ID`: 填入你的频道或群组用户名（例如 `@bwg191`）
+1. 打开 GitHub 仓库页面 $\rightarrow$ **Settings** $\rightarrow$ **Secrets and variables** $\rightarrow$ **Actions**。
+2. 点击 **New repository secret**，添加以下三个密钥：
+
+| 密钥名称 (Secret Name) | 是否必填 | 作用与获取方式 |
+| :--- | :--- | :--- |
+| `MY_PAT` | **强烈推荐** | **突破 60 天休眠**：在 GitHub [Tokens Settings](https://github.com/settings/tokens/new) 生成一个勾选 `repo` 与 `workflow` 权限的个人访问令牌（PAT），使定时任务永久保持真人活跃，免除休眠。 |
+| `TG_BOT_TOKEN` | 可选 | **TG 补货推送**：Telegram 搜索 [@BotFather](https://t.me/BotFather) 发送 `/newbot` 获取的机器人口令。 |
+| `TG_CHAT_ID` | 可选 | **接收推送频道**：将机器人拉入频道设为管理员后，填入你的频道或群组用户名（如 `@bwg191`）。 |
 
 ---
 
