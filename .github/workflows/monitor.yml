@@ -1,42 +1,28 @@
-name: 搬瓦工库存监控与自动部署
+name: 库存探测与补货推送
 
 on:
-  # 定时任务：每 10 分钟自动执行一次库存检测
+  # 定时任务：每 5 分钟自动执行一次库存检测
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/5 * * * *'
   # 支持在 GitHub 网页上手动点击按钮触发
   workflow_dispatch:
-  # 当向 main 分支推送代码时触发
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'README.md'
-      - 'products.json'
-      - 'index.html'
-      - 'sitemap.xml'
 
-# 授予写入权限以允许更新 products.json 并部署 Pages
+# 授予写入权限以允许更新 products.json
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: "monitor"
+  cancel-in-progress: true
 
 jobs:
-  check-and-deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  check:
     runs-on: ubuntu-latest
     steps:
       - name: 检出仓库代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 2
           token: ${{ secrets.MY_PAT }}
 
       - name: 设置 Python 运行环境
@@ -51,7 +37,7 @@ jobs:
         run: |
           python -u scripts/checker.py
 
-      - name: 智能提交库存数据与活跃保活
+      - name: 智能提交库存变动数据
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -69,7 +55,7 @@ jobs:
 
           if [ "$HAS_CHANGE" = "true" ]; then
             echo "[*] 检测到套餐库存状态变动，提交数据到 Git 仓库..."
-            git add products.json index.html sitemap.xml
+            git add products.json
             git commit -m "chore(stock): 自动同步最新库存变动 [skip ci]"
             for i in {1..3}; do
               git pull --rebase origin main || true
@@ -80,8 +66,8 @@ jobs:
             done
           elif [ "$DAYS_DIFF" -ge 14 ]; then
             echo "[*] 距离上次提交已满 $DAYS_DIFF 天，执行一次真人 PAT 心跳 Commit 维持定时任务活跃..."
-            git add products.json index.html sitemap.xml
-            git commit -m "chore(keepalive): 定期活跃心跳保持 [skip ci]"
+            git add products.json
+            git commit -m "chore(keepalive): 定期活跃心跳保持 [skip ci]" --allow-empty
             for i in {1..3}; do
               git pull --rebase origin main || true
               git push origin main && break || {
@@ -90,17 +76,5 @@ jobs:
               }
             done
           else
-            echo "[✓] 库存状态无变动（距上次提交 $DAYS_DIFF 天），跳过 Git Commit（直接发布最新页面到 Pages）。"
+            echo "[✓] 库存状态无变动（距上次提交 $DAYS_DIFF 天），静默退出。"
           fi
-
-      - name: 配置 GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: 打包静态网页资源
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-
-      - name: 部署到 GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4

@@ -1,0 +1,68 @@
+name: 智能部署 GitHub Pages
+
+on:
+  # 定时部署：每 30 分钟刷新一次页面（保持探测时间戳新鲜）
+  schedule:
+    - cron: '*/30 * * * *'
+  # 当库存探测工作流推送了变动数据时，自动触发立即部署
+  push:
+    branches:
+      - main
+    paths:
+      - 'products.json'
+  # 支持手动触发
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python 运行环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 生成最新页面与站点地图
+        run: |
+          echo "[*] 使用当前最新时间戳重新生成页面..."
+          python -u -c "
+          import json
+          from datetime import datetime, timezone, timedelta
+
+          # 将 products.json 中的探测时间戳刷新为当前北京时间
+          with open('products.json', 'r', encoding='utf-8') as f:
+              data = json.load(f)
+          bj = datetime.now(timezone.utc) + timedelta(hours=8)
+          data['updated_at'] = bj.strftime('%Y-%m-%d %H:%M:%S')
+          with open('products.json', 'w', encoding='utf-8') as f:
+              json.dump(data, f, ensure_ascii=False, indent=2)
+          print(f'[✓] 时间戳已刷新: {data[\"updated_at\"]}')
+          "
+          python -u scripts/build_html.py
+
+      - name: 配置 GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: 打包静态网页资源
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -23,7 +23,6 @@ if PROJECT_ROOT not in sys.path:
 
 from scripts.config import Config, JSON_PATH, DOMAINS, USER_AGENTS
 from scripts.notifier import TelegramNotifier
-from scripts.build_html import generate_index_html, update_sitemap
 
 class StockChecker:
     """搬瓦工库存探测器"""
@@ -143,6 +142,21 @@ class StockChecker:
             with open(flag_file, "w", encoding="utf-8") as f:
                 f.write("1")
             print("[*] 检测到套餐库存状态变化，已生成变动标记。")
+
+            # 仅在库存变动时更新数据文件
+            utc_dt = datetime.now(timezone.utc)
+            bj_dt = utc_dt + timedelta(hours=8)
+
+            output_data = {
+                "updated_at": bj_dt.strftime("%Y-%m-%d %H:%M:%S"),
+                "in_stock_count": in_stock_count,
+                "total_count": len(products),
+                "products": products
+            }
+
+            with open(JSON_PATH, "w", encoding="utf-8") as f:
+                json.dump(output_data, f, ensure_ascii=False, indent=2)
+
         else:
             if os.path.exists(flag_file):
                 try:
@@ -150,29 +164,8 @@ class StockChecker:
                 except OSError:
                     pass
 
-        # 更新时间戳（北京时间 UTC+8）
-        utc_dt = datetime.now(timezone.utc)
-        bj_dt = utc_dt + timedelta(hours=8)
-
-        output_data = {
-            "updated_at": bj_dt.strftime("%Y-%m-%d %H:%M:%S"),
-            "in_stock_count": in_stock_count,
-            "total_count": len(products),
-            "products": products
-        }
-
-        with open(JSON_PATH, "w", encoding="utf-8") as f:
-            json.dump(output_data, f, ensure_ascii=False, indent=2)
-
-        # 同步触发 index.html 静态预渲染与 sitemap.xml 更新 (实现 SEO & AI 爬虫极致友好)
-        try:
-            generate_index_html()
-            update_sitemap()
-        except Exception as e:
-            print(f"[-] 静态预渲染失败: {e}")
-
         elapsed = round(time.time() - start_time, 2)
-        print(f"[✓] 检测完毕！耗时: {elapsed}s | 当前有货: {in_stock_count}/{len(products)}")
+        print(f"[✓] 检测完毕！耗时: {elapsed}s | 当前有货: {in_stock_count}/{len(products)} | 库存变动: {'是' if has_status_change else '无'}")
 
         # 触发 Telegram 推送与自动置顶
         if restocked_items:
