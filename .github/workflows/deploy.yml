@@ -9,7 +9,7 @@ on:
     branches:
       - main
     paths:
-      - 'products.json'
+      - 'data/products.json'
   # 支持手动触发
   workflow_dispatch:
 
@@ -20,7 +20,7 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -44,16 +44,27 @@ jobs:
           import json
           from datetime import datetime, timezone, timedelta
 
-          # 将 products.json 中的探测时间戳刷新为当前北京时间
-          with open('products.json', 'r', encoding='utf-8') as f:
+          # 将 data/products.json 中的探测时间戳刷新为当前北京时间
+          with open('data/products.json', 'r', encoding='utf-8') as f:
               data = json.load(f)
           bj = datetime.now(timezone.utc) + timedelta(hours=8)
           data['updated_at'] = bj.strftime('%Y-%m-%d %H:%M:%S')
-          with open('products.json', 'w', encoding='utf-8') as f:
+          with open('data/products.json', 'w', encoding='utf-8') as f:
               json.dump(data, f, ensure_ascii=False, indent=2)
           print(f'[✓] 时间戳已刷新: {data[\"updated_at\"]}')
           "
-          python -u scripts/build_html.py
+          python -u frontend/build.py
+
+      - name: 组装部署目录（仅包含上线所需文件）
+        run: |
+          mkdir -p _site
+          cp index.html sitemap.xml robots.txt llms.txt llms-full.txt _site/
+          cp google9b87d635a3f419de.html _site/ 2>/dev/null || true
+          cp -r data/ _site/data/
+          cp -r static/ _site/static/
+          touch _site/.nojekyll
+          echo "[✓] 部署目录 _site/ 组装完成"
+          du -sh _site/
 
       - name: 配置 GitHub Pages
         uses: actions/configure-pages@v5
@@ -61,7 +72,7 @@ jobs:
       - name: 打包静态网页资源
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
 
       - name: 部署到 GitHub Pages
         id: deployment

@@ -1,0 +1,27 @@
+{
+  "site": {
+    "title": "搬瓦工库存监控 - BandwagonHost VPS 实时库存与全网补货通知",
+    "brand_name": "搬瓦工库存监控",
+    "subtitle": "BandwagonHost Real-time Stock & Restock Monitor",
+    "url": "https://tianqiongshaonian.github.io/"
+  },
+  "affiliate": {
+    "aff_id": "78613",
+    "promo_code": "BWHCXZAVFBVY",
+    "discount_text": "6.78% 循环优惠",
+    "discount_rate": 0.0678
+  },
+  "social": {
+    "tg_channel": "https://t.me/bwg191"
+  },
+  "telegram": {
+    "auto_pin": true,
+    "template": "🎉 <b>搬瓦工补货提醒 (Restock Alert)</b>\n\n📦 <b>方案名称</b>：{name}\n⚡️ <b>线路类型</b>：{circuit_type}\n💻 <b>配置规格</b>：{cpu}核 CPU / {memory} 内存 / {ssd} SSD\n🌐 <b>流量带宽</b>：{band} / {bandwidth}\n🏢 <b>机房节点</b>：{datacenter}\n💵 <b>官方价格</b>：<b>${price} / {billing_cycle}</b>\n🎟 <b>优惠码</b>：<code>{promo_code}</code> ({discount_text})\n\n👉 <a href=\"{buy_url}\"><b>【点击立即直达抢购】</b></a>\n🌐 <a href=\"{site_url}\"><b>【查看更多方案库存监控】</b></a>"
+  },
+  "monitor": {
+    "check_domain": "https://bwh81.net"
+  },
+  "footer": {
+    "disclaimer": "免责声明：本站为第三方搬瓦工(BandwagonHost)库存监控工具，非官网运营。实际价格与配置请以结账页面为准。"
+  }
+}

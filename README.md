@@ -33,7 +33,7 @@
   - **零垃圾提交**：仅在真实发生补货/售罄变动时才触发 Git Commit，无变动时静默退出，Git 历史 100% 纯净。
   - **突破 60 天休眠限制**：通过 PAT（个人访问令牌）签发提交，每 14 天自动心跳保活，定时任务永久全自动运行。
 - ⚙️ **极简配置架构**：
-  - 所有的返利 ID、优惠码、Telegram 频道、消息模板均统一由 [`config.json`](config.json) 控制，改一处全站同步！
+  - 所有的返利 ID、优惠码、Telegram 频道、消息模板均统一由 [`config.json`](data/config.json) 控制，改一处全站同步！
 
 ---
 
@@ -64,28 +64,55 @@ graph LR
 ## 📁 项目目录结构
 
 ```text
-├── config.json                 # ⭐️ 全局唯一配置文件（返利ID、优惠码、TG推送模板等）
-├── index.html                  # 现代化响应式前端网页（静态预渲染 + PC表格/移动卡片）
-├── products.json               # 核心数据源（78+ 款搬瓦工套餐配置与实时库存）
-├── robots.txt                  # 搜索引擎与 AI 爬虫抓取协议规范
+├── backend/                    # 🐍 Python 后端探测与推送系统
+│   ├── __init__.py             #   Python 包初始化文件
+│   ├── config.py               #   配置中心：统一解析 data/config.json 与环境变量
+│   ├── checker.py              #   探测核心：多线程高并发库存探测与智能变动检测
+│   ├── notifier.py             #   通知模块：负责 TG 模板渲染、消息发送与自动置顶
+│   ├── sync_products.py        #   产品同步：全自动同步与新方案发现工具
+│   └── test_tg.py              #   调试工具：命令行一键测试 Telegram 推送与置顶
+├── frontend/                   # 🎨 前端源码（构建输入）
+│   ├── templates/              #   🧩 HTML 模板片段（build.py 组装为完整 index.html）
+│   │   ├── head.html           #     <head> 元标签 + Schema.org JSON-LD + <body> 开头
+│   │   ├── header.html         #     顶部导航栏
+│   │   ├── stat-cards.html     #     实时库存 / 探测时间 / 优惠码 三张统计卡
+│   │   ├── filter-bar.html     #     分类 Tab + 搜索 / 排序 / 视图切换栏
+│   │   ├── products.html       #     卡片流 + 表格容器
+│   │   ├── no-results.html     #     无搜索结果提示
+│   │   ├── guide.html          #     选购指南与核心机房线路解析
+│   │   ├── faq.html            #     常见问题解答 (FAQ)
+│   │   ├── noscript.html       #     <noscript> 降级提示
+│   │   ├── footer.html         #     页脚
+│   │   └── toast.html          #     Toast 提示 + <script> 引用
+│   ├── js/
+│   │   └── app.js              #   前端交互逻辑源码（构建时自动复制到 static/js/）
+│   ├── css/
+│   │   └── input.css           #   Tailwind CSS 源码（含自定义样式）
+│   └── build.py                #   🔧 静态构建器：组装 index.html + 生成 data.js + 更新 sitemap
+├── data/                       # 📊 数据与配置
+│   ├── config.json             #   ⭐️ 全局配置（返利ID、优惠码、TG推送模板等）
+│   └── products.json           #   核心数据源（78+ 款套餐配置与实时库存）
+├── static/                     # 📦 部署用静态资源（直接上线，零外部 CDN）
+│   ├── css/
+│   │   └── tailwind.min.css    #   本地编译的高性能独立 Tailwind CSS
+│   ├── js/
+│   │   ├── app.js              #   构建时从 frontend/js/ 自动复制
+│   │   └── data.js             #   构建时自动生成的运行时数据
+│   ├── fontawesome/            #   本地 Font Awesome 6 图标与 WebFonts
+│   └── images/                 #   站点图标资源
+│       ├── favicon.svg
+│       ├── favicon.ico
+│       └── apple-touch-icon.png
+├── index.html                  # 🌐 构建输出（自动生成，勿手动编辑）
 ├── sitemap.xml                 # XML 站点地图（自动更新时间戳）
+├── robots.txt                  # 搜索引擎与 AI 爬虫抓取协议规范
 ├── llms.txt                    # 🤖 面向大模型与 AI Agent 的精炼摘要规范
 ├── llms-full.txt               # 📚 面向大模型的搬瓦工完整知识库文档
-├── static/                     # 🎨 100% 本地化静态样式与字体库
-│   ├── css/
-│   │   └── tailwind.min.css    # 本地编译的高性能独立 Tailwind CSS
-│   └── fontawesome/            # 本地 Font Awesome 6 图标与 WebFonts
-├── scripts/                    # 🐍 模块化 Python 后端探测与推送系统
-│   ├── __init__.py             # Python 包初始化文件
-│   ├── config.py               # 配置中心：统一解析 config.json 与环境变量
-│   ├── build_html.py           # 静态预渲染与 SEO/Sitemap 构建器
-│   ├── notifier.py             # 通知模块：负责 TG 模板渲染、消息发送与自动置顶
-│   ├── checker.py              # 探测核心：多线程高并发库存探测与智能变动检测
-│   └── test_tg.py              # 调试工具：命令行一键测试 Telegram 推送与置顶
-├── .github/
-│   └── workflows/
-│       ├── monitor.yml         # 📡 库存探测工作流（每 5 分钟高频探测）
-│       └── deploy.yml          # 🌐 Pages 智能部署工作流（每 30 分钟 + 按需）
+├── .github/workflows/
+│   ├── monitor.yml             # 📡 库存探测工作流（每 5 分钟高频探测）
+│   └── deploy.yml              # 🌐 Pages 智能部署工作流（每 30 分钟 + 按需）
+├── tailwind.config.js          # Tailwind 构建配置
+├── LICENSE
 └── README.md                   # 项目使用与部署说明文档
 ```
 
@@ -127,7 +154,7 @@ graph LR
 
 #### 2. 修改你的专属返利 ID 与优惠码
 
-直接在 GitHub 网页上编辑本仓库的 [`config.json`](config.json) 文件：
+直接在 GitHub 网页上编辑本仓库的 [`config.json`](data/config.json) 文件：
 
 ```json
 {
@@ -156,17 +183,17 @@ graph LR
 
 ### 1. 本地运行库存探测
 ```bash
-python3 scripts/checker.py
+python3 backend/checker.py
 ```
 
 ### 2. 本地生成静态页面
 ```bash
-python3 scripts/build_html.py
+python3 frontend/build.py
 ```
 
 ### 3. 测试 Telegram 推送与自动置顶
 ```bash
-python3 scripts/test_tg.py "你的_TG_BOT_TOKEN" "@你的频道用户名"
+python3 backend/test_tg.py "你的_TG_BOT_TOKEN" "@你的频道用户名"
 ```
 
 ### 4. 在 GitHub 网页上手动触发

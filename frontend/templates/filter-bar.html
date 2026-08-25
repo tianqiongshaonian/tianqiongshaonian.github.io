@@ -1,0 +1,71 @@
+    <!-- 筛选、搜索与视图切换控制栏 -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-4 shadow-sm space-y-3">
+      
+      <!-- 分类 Tab 栏 (移动端支持横向平滑滑动) -->
+      <div class="flex items-center space-x-1.5 overflow-x-auto custom-scrollbar pb-1 text-xs sm:text-sm font-medium" id="categoryTabs">
+        <button data-tag="all" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-blue-600 text-white whitespace-nowrap transition">全部方案</button>
+        <button data-tag="instock" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block shrink-0"></span>
+          <span>仅看有货</span>
+        </button>
+        <button data-tag="recommend" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">⭐️ 热门推荐</button>
+        <button data-tag="limited" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">⚡️ 限量版</button>
+        <button data-tag="hk" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">🇭🇰 香港</button>
+        <button data-tag="japan" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">🇯🇵 日本</button>
+        <button data-tag="cn2gia" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">🇺🇸 CN2 GIA-E</button>
+        <button data-tag="singapore" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">🇸🇬 新加坡</button>
+        <button data-tag="kvm" class="tab-btn px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">常规 KVM</button>
+      </div>
+
+      <!-- 详细搜索与排序筛选栏 -->
+      <div class="pt-2 border-t border-slate-100 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5">
+        
+        <!-- 超级详细搜索框 (支持多关键词空格分词) -->
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs sm:text-sm"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="搜索支持空格分词: 如 '香港 1T' / 'DC6 2G' / 'PID 44' / '2核 40G' / '有货'..." 
+            class="w-full pl-9 pr-8 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+          />
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 w-5 h-5 flex items-center justify-center rounded-full text-xs">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- 排序 & 视图切换器 -->
+        <div class="flex items-center space-x-2 self-end md:self-auto w-full md:w-auto justify-between md:justify-end">
+          
+          <!-- 匹配数量统计 -->
+          <div class="text-xs text-slate-400 font-medium px-1">
+            匹配: <span id="matchCount" class="text-blue-600 font-bold">{total_count}</span> 款
+          </div>
+
+          <!-- 排序下拉 -->
+          <div class="relative">
+            <select id="sortSelect" onchange="changeSort(this.value)" class="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl pl-3 pr-7 py-2 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer">
+              <option value="default">默认排序</option>
+              <option value="price-asc">价格：从低到高 ⬆️</option>
+              <option value="price-desc">价格：从高到低 ⬇️</option>
+              <option value="mem-asc">内存：从小到大</option>
+              <option value="mem-desc">内存：从大到小</option>
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 pointer-events-none"></i>
+          </div>
+
+          <!-- 视图切换 (桌面端/移动端可选卡片或表格) -->
+          <div class="bg-slate-100 p-0.5 rounded-xl flex items-center">
+            <button id="viewCardBtn" onclick="switchView('card')" title="卡片视图" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">
+              <i class="fa-solid fa-grip"></i>
+            </button>
+            <button id="viewTableBtn" onclick="switchView('table')" title="表格视图" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">
+              <i class="fa-solid fa-table-list"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>

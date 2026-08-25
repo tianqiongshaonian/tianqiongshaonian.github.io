@@ -1,0 +1,30 @@
+  <!-- 顶部导航栏 (宽屏 1600px 自适应) -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm backdrop-blur-md bg-white/95">
+    <div class="max-w-[1600px] mx-auto px-3 sm:px-5 lg:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 shrink-0">
+          <i class="fa-solid fa-server text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 id="brandName" class="text-base sm:text-lg font-bold text-slate-900 leading-tight">{escape(brand_name)}</h1>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-dot mr-1"></span>实时
+            </span>
+          </div>
+          <p id="brandSubtitle" class="text-xs text-slate-400 hidden sm:block">{escape(subtitle)}</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        <a id="tgChannelBtn" href="{escape(tg_channel)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 text-xs sm:text-sm font-medium transition duration-150 border border-sky-200/60">
+          <i class="fa-brands fa-telegram text-sky-500 text-sm"></i>
+          <span class="hidden xs:inline sm:inline">TG 频道</span>
+        </a>
+        <button onclick="copyPromoCode()" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs sm:text-sm font-medium shadow-sm transition duration-150 active:scale-95">
+          <i class="fa-solid fa-tags"></i>
+          <span>优惠码</span>
+        </button>
+      </div>
+    </div>
+  </header>

@@ -1,0 +1,27 @@
+    <!-- ==================== 1. 移动端/平板/宽屏 现代卡片流视图 (静态预渲染，爬虫与AI直读) ==================== -->
+    <div id="cardViewContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+{cards_html}
+    </div>
+
+    <!-- ==================== 2. PC / 宽屏 经典数据表格视图 (静态预渲染) ==================== -->
+    <div id="tableViewContainer" class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-left text-xs sm:text-sm text-slate-600">
+          <thead class="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200/80 text-[11px] sm:text-xs uppercase tracking-wider">
+            <tr>
+              <th scope="col" class="py-3 px-3 sm:px-4 min-w-[200px]">套餐方案 / 线路</th>
+              <th scope="col" class="py-3 px-2 sm:px-3 whitespace-nowrap">CPU / 内存 / SSD</th>
+              <th scope="col" class="py-3 px-2 sm:px-3 whitespace-nowrap">流量 / 带宽</th>
+              <th scope="col" class="py-3 px-2 sm:px-3">可选机房</th>
+              <th scope="col" class="py-3 px-2 sm:px-3 text-right whitespace-nowrap">原价</th>
+              <th scope="col" class="py-3 px-2 sm:px-3 text-right whitespace-nowrap">折后价</th>
+              <th scope="col" class="py-3 px-2 sm:px-3 text-center whitespace-nowrap">库存状态</th>
+              <th scope="col" class="py-3 px-3 sm:px-4 text-center whitespace-nowrap">直达抢购</th>
+            </tr>
+          </thead>
+          <tbody id="productTableBody" class="divide-y divide-slate-100">
+{table_rows_html}
+          </tbody>
+        </table>
+      </div>
+    </div>

@@ -2,7 +2,7 @@
 module.exports = {
   content: [
     "./index.html",
-    "./src/**/*.{html,js,css}",
+    "./frontend/**/*.{html,js,css}",
     "./static/**/*.js"
   ],
   safelist: [

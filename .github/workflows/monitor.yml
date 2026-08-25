@@ -7,7 +7,7 @@ on:
   # 支持在 GitHub 网页上手动点击按钮触发
   workflow_dispatch:
 
-# 授予写入权限以允许更新 products.json
+# 授予写入权限以允许更新 data/products.json
 permissions:
   contents: write
 
@@ -35,7 +35,7 @@ jobs:
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         run: |
-          python -u scripts/checker.py
+          python -u backend/checker.py
 
       - name: 智能提交库存变动数据
         run: |
@@ -55,8 +55,8 @@ jobs:
 
           if [ "$HAS_CHANGE" = "true" ]; then
             echo "[*] 检测到套餐库存状态变动，提交数据到 Git 仓库..."
-            git add products.json
-            git commit -m "chore(stock): 自动同步最新库存变动 [skip ci]"
+            git add data/products.json
+            git commit -m "chore(stock): 自动同步最新库存变动"
             for i in {1..3}; do
               git pull --rebase origin main || true
               git push origin main && break || {
@@ -66,7 +66,7 @@ jobs:
             done
           elif [ "$DAYS_DIFF" -ge 14 ]; then
             echo "[*] 距离上次提交已满 $DAYS_DIFF 天，执行一次真人 PAT 心跳 Commit 维持定时任务活跃..."
-            git add products.json
+            git add data/products.json
             git commit -m "chore(keepalive): 定期活跃心跳保持 [skip ci]" --allow-empty
             for i in {1..3}; do
               git pull --rebase origin main || true

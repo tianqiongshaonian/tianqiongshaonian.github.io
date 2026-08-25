@@ -1,0 +1,16 @@
+  <!-- 底部 Footer (由 config.json 动态驱动) -->
+  <footer class="bg-white border-t border-slate-200 mt-12 py-8 text-center text-xs text-slate-400 space-y-3">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 space-y-1.5">
+      <div class="flex items-center justify-center gap-4 text-slate-500 font-medium pb-1">
+        <a href="{escape(site_url)}" class="hover:text-blue-600 transition">监控首页</a>
+        <span>•</span>
+        <a href="sitemap.xml" target="_blank" class="hover:text-blue-600 transition">站点地图 (Sitemap)</a>
+        <span>•</span>
+        <a href="llms.txt" target="_blank" class="hover:text-blue-600 transition">AI 规范 (llms.txt)</a>
+        <span>•</span>
+        <a href="{escape(tg_channel)}" target="_blank" rel="noopener noreferrer" class="hover:text-sky-600 transition">Telegram 补货推送</a>
+      </div>
+      <p id="footerBrand" class="font-medium text-slate-500">{escape(brand_name)} - BandwagonHost 全方案库存与补货推送系统</p>
+      <p id="footerDisclaimer" class="text-slate-400 max-w-2xl mx-auto">{escape(disclaimer)}</p>
+    </div>
+  </footer>
