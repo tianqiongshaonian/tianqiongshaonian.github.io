@@ -58,7 +58,8 @@ async function loadProducts() {
     appData.products = prodData.products || prodData || [];
 
     if (prodData.updated_at) {
-      document.getElementById('statUpdatedTime').textContent = prodData.updated_at;
+      const updatedEl = document.getElementById('statUpdatedTime');
+      if (updatedEl) updatedEl.textContent = prodData.updated_at;
     }
 
     renderStats();
