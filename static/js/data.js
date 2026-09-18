@@ -1063,7 +1063,7 @@ window.appData = {
     "ssd": "20GB",
     "band": "1000GB",
     "bandwidth": "2.5Gbps",
-    "datacenter": "荷兰阿姆斯特丹，三网回程 CN2 GIA（后续接入 AS10099 和 CMIN2）",
+    "datacenter": "荷兰阿姆斯特丹，三网回程 CN2 GIA（已接入 AS10099 和 CMIN2）",
     "price": "39",
     "status": 1,
     "tags": [
