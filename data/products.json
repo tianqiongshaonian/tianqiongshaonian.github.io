@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-24 20:37:12",
-  "in_stock_count": 56,
+  "updated_at": "2026-10-30 08:24:06",
+  "in_stock_count": 53,
   "total_count": 78,
   "products": [
     {
@@ -14,7 +14,7 @@
       "bandwidth": "1Gbps",
       "datacenter": "DC3 CN2/DC2 AO/DC8 ZNET/弗里蒙特/新泽西/纽约/温哥华/荷兰DC2",
       "price": "49.99",
-      "status": 1,
+      "status": 0,
       "tags": [
         "recommend",
         "kvm"
@@ -124,7 +124,7 @@
       "bandwidth": "2.5Gbps",
       "datacenter": "5个CN2 GIA-E机房（洛杉矶DC6/DC9/圣何塞/纽约/温哥华）+日本软银+荷兰联通等共15个机房",
       "price": "169.99",
-      "status": 1,
+      "status": 0,
       "tags": [
         "recommend",
         "cn2gia"
@@ -288,7 +288,7 @@
       "bandwidth": "2.5Gbps",
       "datacenter": "DC5 SLA 机房（三网优质线路，电商级 99.99% SLA，每两周可免费换一次 IP）",
       "price": "239.99",
-      "status": 1,
+      "status": 0,
       "tags": [
         "recommend",
         "cn2gia"
