@@ -127,7 +127,7 @@ class StockChecker:
                         print(f"[🔥 发现补货] {p['name']} (PID: {p['pid']}) 重新有货！")
                     elif old_status == 1 and new_status == 0:
                         out_of_stock_items.append(p)
-                        print(f"[❄️ 套餐售罄] {p['name']} (PID: {p['pid']}) 已断货。")
+                        print(f"[❄️ 套餐断货/售罄] {p['name']} (PID: {p['pid']}) 已断货下架。")
 
                 p["status"] = new_status
                 if new_status == 1:
@@ -167,13 +167,23 @@ class StockChecker:
         elapsed = round(time.time() - start_time, 2)
         print(f"[✓] 检测完毕！耗时: {elapsed}s | 当前有货: {in_stock_count}/{len(products)} | 库存变动: {'是' if has_status_change else '无'}")
 
-        # 触发 Telegram 推送与自动置顶
+        # 触发 Telegram 推送与自动置顶 (补货提醒)
+        has_sent_msg = False
         if restocked_items:
-            print(f"[*] 正在为 {len(restocked_items)} 款新补货套餐发送 Telegram 推送...")
+            print(f"[*] 正在为 {len(restocked_items)} 款新补货套餐发送 Telegram 补货推送...")
             for i, item in enumerate(restocked_items):
                 if i > 0:
                     time.sleep(1.5)  # Telegram Bot API 限流保护：同一频道每秒最多 1 条消息
                 self.notifier.send_restock_alert(item)
+            has_sent_msg = True
+
+        # 触发 Telegram 推送 (断货/售罄下架提醒)
+        if out_of_stock_items:
+            print(f"[*] 正在为 {len(out_of_stock_items)} 款断货/售罄下架套餐发送 Telegram 售罄推送...")
+            for i, item in enumerate(out_of_stock_items):
+                if has_sent_msg or i > 0:
+                    time.sleep(1.5)  # Telegram Bot API 限流保护
+                self.notifier.send_out_of_stock_alert(item)
 
 def main():
     checker = StockChecker()

@@ -48,8 +48,33 @@ class TelegramNotifier:
         try:
             return self.config.tg_template.format(**safe_fields)
         except Exception as e:
-            print(f"[-] 模板自定义渲染失败，降级为默认模板: {e}")
+            print(f"[-] 补货模板自定义渲染失败，降级为默认模板: {e}")
             return self.config.DEFAULT_TEMPLATE.format(**safe_fields)
+
+    def render_out_of_stock_message(self, product):
+        """根据配置模板渲染断货/售罄通知文本 (自动对特殊字符进行 HTML 实体转义)"""
+        safe_fields = {
+            "name": html.escape(str(product.get("name", ""))),
+            "circuit_type": html.escape(str(product.get("circuit_type", ""))),
+            "cpu": html.escape(str(product.get("cpu", ""))),
+            "memory": html.escape(str(product.get("memory", ""))),
+            "ssd": html.escape(str(product.get("ssd", ""))),
+            "band": html.escape(str(product.get("band", ""))),
+            "bandwidth": html.escape(str(product.get("bandwidth", ""))),
+            "datacenter": html.escape(str(product.get("datacenter", ""))),
+            "price": html.escape(str(product.get("price", ""))),
+            "billing_cycle": html.escape(str(product.get("billing_cycle", "年付"))),
+            "pid": html.escape(str(product.get("pid", ""))),
+            "promo_code": html.escape(str(self.config.promo_code)),
+            "discount_text": html.escape(str(self.config.discount_text)),
+            "site_url": self.config.site_url
+        }
+
+        try:
+            return self.config.tg_out_of_stock_template.format(**safe_fields)
+        except Exception as e:
+            print(f"[-] 售罄模板自定义渲染失败，降级为默认模板: {e}")
+            return self.config.DEFAULT_OUT_OF_STOCK_TEMPLATE.format(**safe_fields)
 
     def send_message(self, text, auto_pin=None):
         """发送单条消息并可选自动置顶"""
@@ -116,4 +141,12 @@ class TelegramNotifier:
         success, msg_id = self.send_message(text)
         if success:
             print(f"[+] 补货通知已推送: {product.get('name')} (Message ID: {msg_id})")
+        return success
+
+    def send_out_of_stock_alert(self, product):
+        """发送断货/售罄下架提醒 (默认不置顶，避免覆盖补货置顶消息)"""
+        text = self.render_out_of_stock_message(product)
+        success, msg_id = self.send_message(text, auto_pin=False)
+        if success:
+            print(f"[+] 断货/售罄通知已推送: {product.get('name')} (Message ID: {msg_id})")
         return success

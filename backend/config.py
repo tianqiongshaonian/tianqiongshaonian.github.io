@@ -42,6 +42,18 @@ class Config:
         "🌐 <a href=\"{site_url}\"><b>【查看更多方案库存监控】</b></a>"
     )
 
+    DEFAULT_OUT_OF_STOCK_TEMPLATE = (
+        "❄️ <b>搬瓦工断货/售罄提醒 (Out of Stock)</b>\n\n"
+        "📦 <b>方案名称</b>：{name}\n"
+        "⚡️ <b>线路类型</b>：{circuit_type}\n"
+        "💻 <b>配置规格</b>：{cpu}核 CPU / {memory} 内存 / {ssd} SSD\n"
+        "🌐 <b>流量带宽</b>：{band} / {bandwidth}\n"
+        "🏢 <b>机房节点</b>：{datacenter}\n"
+        "💵 <b>官方价格</b>：${price} / {billing_cycle}\n\n"
+        "⚠️ 该热门方案现已断货下架。持续关注本频道，一旦补货将第一时间推送！\n"
+        "🌐 <a href=\"{site_url}\"><b>【查看更多在售方案监控】</b></a>"
+    )
+
     def __init__(self):
         self.raw_data = self._load_json()
 
@@ -64,6 +76,7 @@ class Config:
         # Telegram 推送参数
         tg = self.raw_data.get("telegram", {})
         self.tg_template = tg.get("template", self.DEFAULT_TEMPLATE)
+        self.tg_out_of_stock_template = tg.get("out_of_stock_template", self.DEFAULT_OUT_OF_STOCK_TEMPLATE)
         self.tg_auto_pin = tg.get("auto_pin", True)
 
         # 环境变量中的敏感密钥
