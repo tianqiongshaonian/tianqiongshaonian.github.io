@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-30 08:24:06",
-  "in_stock_count": 53,
+  "updated_at": "2026-11-11 10:36:59",
+  "in_stock_count": 52,
   "total_count": 78,
   "products": [
     {
@@ -890,7 +890,7 @@
       "bandwidth": "1Gbps",
       "datacenter": "迪拜、DC6 CN2 GIA-E、DC9 CN2 GIA、日本软银等 14 个机房",
       "price": "169.99",
-      "status": 1,
+      "status": 0,
       "tags": [],
       "recommended": 0,
       "billing_cycle": "年付"
